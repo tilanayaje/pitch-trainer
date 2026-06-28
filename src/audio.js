@@ -1,8 +1,8 @@
 // Audio I/O only — no DOM, no UI. Owns the AudioContext, mic stream, and the
 // oscillator used to play the "call" tones.
 
-import { S } from "../state.js";
-import { autoCorrelate, smoother } from "../pitch.js";
+import { S } from "./state.js";
+import { autoCorrelate, smoother } from "./pitch.js";
 
 export async function enableMic() {
   S.audioCtx = new (window.AudioContext || window.webkitAudioContext)();

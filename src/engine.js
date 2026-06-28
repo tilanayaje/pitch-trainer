@@ -5,13 +5,13 @@
 //          unless retentionTest is on, in which case round 2 is silent (no feedback).
 // The concurrent live line is an opt-in toggle, not a stage — a rescue tool.
 
-import { S } from "../state.js";
+import { S } from "./state.js";
 import { stepMs, NOTE_GAP } from "./drills.js";
-import { freqForDegree } from "../theory.js";
+import { freqForDegree } from "./theory.js";
 import { playTone } from "./audio.js";
-import { scoreAttempt } from "../scoring.js";
-import { drawPlot } from "../render.js";
-import { status, setControls, renderScores } from "../ui.js";
+import { scoreAttempt } from "./scoring.js";
+import { drawPlot } from "./render.js";
+import { status, setControls, renderScores } from "./ui.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
