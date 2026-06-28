@@ -1,6 +1,6 @@
 {
-  "name": "Pitch Driller",
-  "short_name": "Pitch Driller",
+  "name": "PitchTrainer",
+  "short_name": "PitchTrainer",
   "description": "Real-time vocal pitch trainer with solfège drills and cents-level scoring.",
   "start_url": "./index.html",
   "scope": "./",
