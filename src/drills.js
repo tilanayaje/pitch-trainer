@@ -13,7 +13,7 @@ export const DRILLS = {
   scale_up:  { name: "do-re-mi-fa-so-la-ti-do",  notes: ["do", "re", "mi", "fa", "so", "la", "ti", "do'"], noteDur: 600 },
 };
 
-// Notes play connected (legato), so the gap is 0. Instead of inserting silence,
+
 // scoring trims TAIL_TRIM ms off each note's tail so the scoop toward the NEXT note
 // can't pollute this note's hold statistics.
 export const NOTE_GAP = 0;

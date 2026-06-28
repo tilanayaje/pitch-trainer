@@ -1,5 +1,4 @@
 // Monophonic pitch detection: autocorrelation + parabolic interpolation.
-// This is a solved problem — the value of the app is elsewhere, so this stays simple.
 // Swap target for a future AudioWorklet / pYIN / SwiftF0 by keeping this interface:
 // a function returning fundamental frequency in Hz (or -1 when unvoiced).
 
@@ -10,7 +9,7 @@ export const SMOOTHER_WINDOW   = 7;     // median history length (frames)
 export const HOLD_FRAMES       = 6;     // frames to hold last good pitch through a dropout
 
 // Last measured clarity (0–1). Set on every call; read by callers for a confidence indicator.
-// Note: proper breathiness handling needs pYIN/CREPE — this is a heuristic improvement only.
+// Note: proper breathiness handling needs pYIN/CREPE. this is a heuristic improvement only.
 export let lastClarity = 0;
 
 export function autoCorrelate(buf, sampleRate) {
@@ -48,7 +47,7 @@ export function autoCorrelate(buf, sampleRate) {
   for (let i = d; i < Math.min(maxLag, n); i++) { if (c[i] > maxv) { maxv = c[i]; T0 = i; } }
   if (T0 <= 0) { lastClarity = 0; return -1; }
 
-  // clarity gate: reject breath/noise even when RMS is above the floor.
+  // reject breath/noise even when RMS is above the floor.
   // A clearly pitched note has a strong dominant lag; noise has a flat profile.
   const clarity = e0 > 0 ? maxv / e0 : 0;
   lastClarity = clarity;

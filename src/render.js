@@ -1,5 +1,5 @@
 // Scope rendering: pitch on Y, time on X. The vertical gap between your trace and
-// the target line IS the flat/sharp error — that's why pitch is the Y axis.
+// the target line is the flat/sharp error that's why pitch is the Y axis.
 
 import { S } from "./state.js";
 import { freqToMidi, freqToName, midiToFreq, DEGREE, freqForDegree } from "./theory.js";

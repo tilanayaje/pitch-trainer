@@ -1,5 +1,5 @@
-// Audio I/O only — no DOM, no UI. Owns the AudioContext, mic stream, and the
-// oscillator used to play the "call" tones.
+// Audio I/O only 
+// AudioContext, mic stream, and the oscillator used to play the "call" tones.
 
 import { S } from "./state.js";
 import { autoCorrelate, smoother } from "./pitch.js";

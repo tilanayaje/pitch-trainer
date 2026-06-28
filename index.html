@@ -10,6 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Saira+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 </head>
 <body>
 <header>
@@ -19,7 +27,7 @@
 </header>
 
 <main>
-  <!-- HERO: strobe tuner. Live the moment the mic is on, before any drill -->
+  <!-- HERO: strobe tuner. Live the moment the mic is on before any drill -->
   <div class="brushed hero">
     <div class="hero-row">
       <span class="eyebrow">Tuner</span>
@@ -89,5 +97,8 @@
 </main>
 
 <script type="module" src="src/main.js"></script>
+<footer style="text-align:center;padding:1rem;font-size:0.75rem;opacity:0.45">
+  This site uses Google Analytics for anonymous visitor analytics.
+</footer>
 </body>
 </html>

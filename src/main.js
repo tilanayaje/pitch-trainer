@@ -1,4 +1,4 @@
-// Entry point: the render loop, dropdown population, and all DOM wiring.
+// Entry point: render loop, dropdown population, and all DOM wiring.
 
 import { S } from "./state.js";
 import { DRILLS } from "./drills.js";

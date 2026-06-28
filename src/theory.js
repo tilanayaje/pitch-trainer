@@ -1,4 +1,4 @@
-// Pure music-theory helpers. No state, no DOM — safe to unit-test in isolation.
+// Pure music-theory helpers
 
 export const A4 = 440;
 export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
