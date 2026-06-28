@@ -64,10 +64,10 @@ document.getElementById("tempoSlider").oninput = (e) => {
   tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
 };
 
-// CRT/tube-amp power-down flash: instant white bloom over the tuner face that
-// rapidly fades to black. Double-rAF ensures the white frame is painted before
-// the transition fires — without it the browser skips straight to opacity:0.
-function powerDownFlash() {
+// CRT power-off collapse: white overlay blooms then squashes vertically to a
+// thin line, then snaps out — the classic tube/CRT discharge look.
+// The @keyframes live in css/styles.css (crt-collapse).
+function crtCollapse() {
   const face = document.querySelector(".face");
   const el = document.createElement("div");
   Object.assign(el.style, {
@@ -75,26 +75,22 @@ function powerDownFlash() {
     background: "white",
     borderRadius: "10px",
     pointerEvents: "none",
-    opacity: "1",
-    transition: "opacity 280ms ease-out",
     zIndex: "10",
+    animation: "crt-collapse 0.36s ease-in forwards",
   });
   const wasStatic = getComputedStyle(face).position === "static";
   if (wasStatic) face.style.position = "relative";
   face.appendChild(el);
-  requestAnimationFrame(() => requestAnimationFrame(() => { el.style.opacity = "0"; }));
   setTimeout(() => {
     if (face.contains(el)) face.removeChild(el);
     if (wasStatic) face.style.position = "";
-  }, 350);
+  }, 500);
 }
 
 // --- mic toggle ---
 document.getElementById("micBtn").onclick = async (e) => {
   if (S.phase !== "IDLE") return; // don't toggle mid-drill
   if (S.micOn) {
-    micOffSound();
-    powerDownFlash();
     disableMic();
     updateLiveTuner(); // reset the strobe to "no signal" (loop has stopped)
     e.target.textContent = "Enable mic";
@@ -102,6 +98,9 @@ document.getElementById("micBtn").onclick = async (e) => {
     document.getElementById("micState").textContent = "mic off";
     document.getElementById("startBtn").disabled = true;
     status("mic off");
+    // Sound and visual sync together after a brief discharge delay,
+    // mimicking the lag of a real amp/CRT after the switch is flipped.
+    setTimeout(() => { micOffSound(); crtCollapse(); }, 320);
     return;
   }
   try {
