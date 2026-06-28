@@ -3,6 +3,10 @@ import { freqToName, midiToFreq } from "./theory.js";
 const KEY = "pt_history";
 const MAX = 50;
 const TUNE = 15;
+// Octave/harmonic detector glitches produce |mean| far beyond any real singing error.
+// Notes past this threshold are excluded from stored averages and tallies only —
+// the live display and per-attempt score table are never filtered.
+const ARTIFACT_THRESHOLD = 80;
 
 function load() {
   try {
@@ -20,17 +24,18 @@ function persist(records) {
 
 export function saveAttempt(scores, drill, tonicMidi) {
   const withMean = scores.filter((s) => s.mean != null);
-  const avgMean = withMean.length
-    ? Math.round(withMean.reduce((a, s) => a + s.mean, 0) / withMean.length)
+  const usable = withMean.filter((s) => Math.abs(s.mean) <= ARTIFACT_THRESHOLD);
+  const avgMean = usable.length
+    ? Math.round(usable.reduce((a, s) => a + s.mean, 0) / usable.length)
     : null;
   const record = {
     ts: Date.now(),
     drill: drill.name,
     tonic: freqToName(midiToFreq(tonicMidi)),
     notes: scores.length,
-    inTune: withMean.filter((s) => Math.abs(s.mean) <= TUNE).length,
-    flat: withMean.filter((s) => s.mean < -TUNE).length,
-    sharp: withMean.filter((s) => s.mean > TUNE).length,
+    inTune: usable.filter((s) => Math.abs(s.mean) <= TUNE).length,
+    flat: usable.filter((s) => s.mean < -TUNE).length,
+    sharp: usable.filter((s) => s.mean > TUNE).length,
     avgMean,
   };
   const records = load();

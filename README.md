@@ -2,7 +2,7 @@
 
 This app is a free alternative to websites that show pitch in real time. It also has Solfège-centered drills for hitting the right pitch and sustaining it. I personally use it for practice and like it.
 
-Try it out at https://tilanayaje.github.io/pitch-trainer/ ! 
+Try it out at https://tilanayaje.github.io/pitch-trainer/ !
 
 ## Tips for best results
 - Eliminate any background noise
@@ -12,9 +12,10 @@ Try it out at https://tilanayaje.github.io/pitch-trainer/ !
 
 ## How to use
 1. **Enable mic** — Hum or sing a steady note and confirm the cents reading is stable before drilling.
-2. Pick a **drill** and a **tonic**
-3. **Start drill.** Round 1 shows the target on the grid, you sing blind, the result is revealed after. Round 2 plays the target by ear only.
-4. Read the table. **Hold mean dev** is your flat/sharp on the sustain; **hold drift** is how steady the hold was; **landed** is how long it took to arrive.
+2. Pick a **drill** and a **tonic**, and set the **tempo** if you want it slower.
+3. **Start drill.** It plays the target, counts you in, you sing it back, and the result is shown after.
+4. Two optional helpers: **playhead** shows a moving cursor over the target so you know where you are in the phrase, and **live line while singing** shows your actual pitch as you go. Both are off by default — sing blind to test yourself, turn them on for help.
+5. Read the table. **Hold mean dev** is your flat/sharp on the sustain; **hold drift** is how steady the hold was; **landed** is how long it took to arrive.
 
 The glyph column (♭ / ♯ / ✓) uses a tight ±15-cent musical threshold, independent of the looser in-band tolerance — so a note that's flat but technically "in band" still reads ♭. Trust the glyph.
 
