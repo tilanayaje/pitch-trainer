@@ -1,39 +1,90 @@
-// Audio I/O only 
+// Audio I/O only
 // AudioContext, mic stream, and the oscillator used to play the "call" tones.
+//
+// Pitch detection runs in an AudioWorklet (pitch-processor.js) on the audio thread
+// when the browser supports it, eliminating the O(n²) autocorrelation cost from the
+// main-thread render loop. Falls back to the original analyser-based path when the
+// worklet can't be loaded (older browsers, file:// origins, CSP restrictions).
 
 import { S } from "./state.js";
 import { autoCorrelate, smoother } from "./pitch.js";
 
+let _workletActive = false;
+let _workletNode   = null;
+
 export async function enableMic() {
   S.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   await S.audioCtx.resume();
+
+  // Mobile browsers may still override some of these despite the constraints.
+  // The `advanced` array repeats them as an additional enforcement hint for
+  // browsers that differentiate between ideal and mandatory constraint forms.
   S.micStream = await navigator.mediaDevices.getUserMedia({
-    audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+    audio: {
+      echoCancellation:  false,
+      noiseSuppression:  false,
+      autoGainControl:   false,
+      channelCount:      1,
+      advanced: [{ echoCancellation: false, noiseSuppression: false, autoGainControl: false }],
+    },
   });
+
   S.micSource = S.audioCtx.createMediaStreamSource(S.micStream);
+
+  // --- Try AudioWorklet (off-main-thread path) ---
+  if (window.AudioWorklet && S.audioCtx.audioWorklet) {
+    try {
+      // import.meta.url resolves relative to this module file (src/audio.js),
+      // so the path stays correct under any deployment subpath (e.g. /pitch-trainer/).
+      await S.audioCtx.audioWorklet.addModule(
+        new URL('./pitch-processor.js', import.meta.url).href
+      );
+      _workletNode = new AudioWorkletNode(S.audioCtx, 'pitch-processor');
+      _workletNode.port.onmessage = (e) => { S.currentFreq = e.data; };
+      // Connect mic → worklet. The node doesn't need to reach destination;
+      // the upstream mic source keeps it active in the graph.
+      S.micSource.connect(_workletNode);
+      _workletActive = true;
+    } catch (err) {
+      console.warn('[PitchTrainer] AudioWorklet unavailable, using main-thread fallback:', err);
+      _setupAnalyser();
+    }
+  } else {
+    _setupAnalyser();
+  }
+
+  S.micOn = true;
+}
+
+function _setupAnalyser() {
   S.analyser = S.audioCtx.createAnalyser();
   S.analyser.fftSize = 2048;
   S.timeBuf = new Float32Array(S.analyser.fftSize);
   S.micSource.connect(S.analyser);
-  S.micOn = true;
 }
 
 export function disableMic() {
-  S.micOn = false; // the render loop checks this and stops
+  _workletActive = false;
+  if (_workletNode) { _workletNode.port.onmessage = null; _workletNode = null; }
+  S.micOn = false; // render loop checks this and stops
   try { if (S.micSource) S.micSource.disconnect(); } catch (e) { /* already gone */ }
   if (S.micStream) S.micStream.getTracks().forEach((t) => t.stop()); // releases the device
   if (S.audioCtx) S.audioCtx.close();
   S.micStream = null;
   S.micSource = null;
-  S.analyser = null;
-  S.audioCtx = null;
+  S.analyser  = null;
+  S.audioCtx  = null;
   S.currentFreq = -1;
-  smoother.reset();
+  smoother.reset(); // reset fallback-path smoother state
 }
 
-// Read one frame; updates and returns S.currentFreq (Hz, or -1 unvoiced).
+// In the worklet path S.currentFreq is already updated by the worklet's postMessage
+// handler; this function just returns it. In the fallback path it runs the full
+// autocorrelation synchronously on the main thread (original behaviour).
 export function readPitch() {
-  if (!S.micOn || !S.analyser) return -1;
+  if (!S.micOn) return -1;
+  if (_workletActive) return S.currentFreq;
+  if (!S.analyser) return -1;
   S.analyser.getFloatTimeDomainData(S.timeBuf);
   S.currentFreq = smoother.push(autoCorrelate(S.timeBuf, S.audioCtx.sampleRate));
   return S.currentFreq;
