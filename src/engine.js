@@ -9,6 +9,7 @@ import { playTone } from "./audio.js";
 import { scoreAttempt } from "./scoring.js";
 import { drawPlot } from "./render.js";
 import { status, setControls, renderScores } from "./ui.js";
+import { saveAttempt, renderHistory } from "./history.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -67,6 +68,8 @@ export async function runDrill() {
     const scores = scoreAttempt(S.trace, drill, S.tonicMidi, S.tolerance, S.tempo);
     drawPlot({ review: true });
     renderScores(scores);
+    saveAttempt(scores, drill, S.tonicMidi);
+    renderHistory();
     status("result");
     await sleep(2600);
     S.holdReview = true;

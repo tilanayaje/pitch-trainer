@@ -8,6 +8,7 @@ import { drawPlot } from "./render.js";
 import { updateLiveTuner } from "./tuner.js";
 import { runDrill, sampleTrace } from "./engine.js";
 import { status } from "./ui.js";
+import { renderHistory, clearHistory } from "./history.js";
 
 // --- render loop: runs only while the mic is on (started on enable, stops on disable) ---
 function loop() {
@@ -94,5 +95,8 @@ document.getElementById("micBtn").onclick = async (e) => {
 document.getElementById("startBtn").onclick = () => { if (S.phase === "IDLE") runDrill(); };
 document.getElementById("stopBtn").onclick = () => { S.abort = true; S.recording = false; };
 
+document.getElementById("clearHistBtn").onclick = clearHistory;
+
 // --- first paint ---
 drawPlot({ preplay: true });
+renderHistory();
