@@ -64,50 +64,29 @@ document.getElementById("tempoSlider").oninput = (e) => {
   tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
 };
 
-// Brief warm-noise burst over the tuner face — mimics a CRT/amp powering down.
-function playStaticBurst() {
+// CRT/tube-amp power-down flash: instant white bloom over the tuner face that
+// rapidly fades to black. Double-rAF ensures the white frame is painted before
+// the transition fires — without it the browser skips straight to opacity:0.
+function powerDownFlash() {
   const face = document.querySelector(".face");
-  const W = face.clientWidth || 400;
-  const H = face.clientHeight || 120;
-  const SCALE = 4; // chunky phosphor pixels
-  const cvs = document.createElement("canvas");
-  cvs.width = Math.max(1, Math.ceil(W / SCALE));
-  cvs.height = Math.max(1, Math.ceil(H / SCALE));
-  Object.assign(cvs.style, {
+  const el = document.createElement("div");
+  Object.assign(el.style, {
     position: "absolute", inset: "0",
-    width: "100%", height: "100%",
-    pointerEvents: "none", opacity: "1",
-    transition: "opacity 150ms ease-out",
-    zIndex: "10", mixBlendMode: "screen",
-    borderRadius: "10px", imageRendering: "pixelated",
+    background: "white",
+    borderRadius: "10px",
+    pointerEvents: "none",
+    opacity: "1",
+    transition: "opacity 280ms ease-out",
+    zIndex: "10",
   });
   const wasStatic = getComputedStyle(face).position === "static";
   if (wasStatic) face.style.position = "relative";
-  face.appendChild(cvs);
-
-  const ctx = cvs.getContext("2d");
-  let animId;
-  function drawNoise() {
-    const img = ctx.createImageData(cvs.width, cvs.height);
-    const d = img.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const on = Math.random() > 0.38;
-      const v = on ? ((Math.random() * 180 + 60) | 0) : 0;
-      d[i] = v; d[i + 1] = (v * 0.72) | 0; d[i + 2] = (v * 0.35) | 0; d[i + 3] = 255;
-    }
-    ctx.putImageData(img, 0, 0);
-    animId = requestAnimationFrame(drawNoise);
-  }
-  drawNoise();
-
+  face.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => { el.style.opacity = "0"; }));
   setTimeout(() => {
-    cancelAnimationFrame(animId);
-    cvs.style.opacity = "0";
-    setTimeout(() => {
-      if (face.contains(cvs)) face.removeChild(cvs);
-      if (wasStatic) face.style.position = "";
-    }, 180);
-  }, 80);
+    if (face.contains(el)) face.removeChild(el);
+    if (wasStatic) face.style.position = "";
+  }, 350);
 }
 
 // --- mic toggle ---
@@ -115,7 +94,7 @@ document.getElementById("micBtn").onclick = async (e) => {
   if (S.phase !== "IDLE") return; // don't toggle mid-drill
   if (S.micOn) {
     micOffSound();
-    playStaticBurst();
+    powerDownFlash();
     disableMic();
     updateLiveTuner(); // reset the strobe to "no signal" (loop has stopped)
     e.target.textContent = "Enable mic";
