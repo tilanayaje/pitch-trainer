@@ -1,0 +1,12 @@
+{
+  "name": "Pitch Driller",
+  "short_name": "Pitch Driller",
+  "description": "Real-time vocal pitch trainer with solfège drills and cents-level scoring.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2C2013",
+  "theme_color": "#2C2013",
+  "icons": []
+}

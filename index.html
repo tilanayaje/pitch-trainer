@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2C2013">
+<title>Pitch Driller</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Saira+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <span class="led"></span>
+  <h1>Pitch&nbsp;Driller</h1>
+  <span class="sub">vocal pitch trainer</span>
+</header>
+
+<main>
+  <!-- HERO: strobe tuner. Live the moment the mic is on, before any drill -->
+  <div class="brushed hero">
+    <div class="hero-row">
+      <span class="eyebrow">Tuner</span>
+      <span class="eyebrow" id="micState" style="margin-left:auto">mic off</span>
+      <button id="micBtn">Enable mic</button>
+    </div>
+    <div class="face">
+      <div class="note" id="liveNote">—</div>
+      <div class="readout" id="liveCents">enable mic to begin</div>
+      <div class="strobe">
+        <span class="sym" id="flatSym">&#9837;</span>
+        <div class="track">
+          <div class="rule"></div>
+          <div class="tick" style="left:25%"></div>
+          <div class="detent"></div>
+          <div class="tick" style="left:75%"></div>
+          <div class="needle" id="liveFill"></div>
+        </div>
+        <span class="sym" id="sharpSym">&#9839;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="brushed controls">
+    <div class="row">
+      <label>Drill
+        <select id="drillSel"></select>
+      </label>
+      <label>Tonic (do)
+        <select id="tonicSel"></select>
+      </label>
+      <label>Tolerance (± cents)
+        <input type="number" id="tolInput" value="50" min="10" max="100" step="5" style="width:80px">
+      </label>
+      <label class="toggle" style="align-self:flex-end">
+        <input type="checkbox" id="concurrentChk"> live line while singing
+      </label>
+      <label class="toggle" style="align-self:flex-end">
+        <input type="checkbox" id="retentionChk"> round 2 = silent retention test
+      </label>
+      <button id="startBtn" disabled>Start drill</button>
+      <button id="stopBtn" class="ghost" disabled>Stop</button>
+    </div>
+    <div class="hint">Round 1: target shown on the grid → you sing blind → result revealed after.&nbsp;
+      Round 2: target played (audio only, no grid) → you sing blind → result after (unless retention test).</div>
+  </div>
+
+  <!-- VIZ -->
+  <div class="brushed viz">
+    <div class="status" id="status">idle</div>
+    <div class="screen"><canvas id="plot" width="940" height="200"></canvas></div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="brushed score" id="scorePanel" style="display:none">
+    <table id="scoreTable">
+      <thead><tr><th></th><th>note</th><th>target</th><th>landed</th><th>hold in band</th><th>hold mean dev</th><th>hold drift</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
