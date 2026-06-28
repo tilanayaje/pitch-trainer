@@ -39,6 +39,57 @@ export function readPitch() {
   return S.currentFreq;
 }
 
+// Analog switch-engage "thunk" — low sine burst, fast attack, short decay.
+// Uses its own AudioContext so it's self-contained regardless of mic state.
+export function micOnSound() {
+  const ac = new AudioContext();
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 87;
+  const t = ac.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.45, t + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  osc.connect(g).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + 0.11);
+  setTimeout(() => ac.close(), 400);
+}
+
+// Lower, duller thunk + noise burst for mic off. Own AudioContext so it plays
+// cleanly even after the main context has been torn down.
+export function micOffSound() {
+  const ac = new AudioContext();
+  const t = ac.currentTime;
+
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 58;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.28, t + 0.007);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+  osc.connect(g).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + 0.15);
+
+  // Short noise burst — pairs with the visual static on the tuner face.
+  const len = (ac.sampleRate * 0.12) | 0;
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const ch = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+  const noiseSrc = ac.createBufferSource();
+  noiseSrc.buffer = buf;
+  const ng = ac.createGain();
+  ng.gain.setValueAtTime(0.18, t);
+  ng.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+  noiseSrc.connect(ng).connect(ac.destination);
+  noiseSrc.start(t);
+
+  setTimeout(() => ac.close(), 500);
+}
+
 // Play a target tone with a short attack/release envelope to avoid clicks.
 export function playTone(freq, durMs) {
   return new Promise((res) => {
