@@ -65,27 +65,21 @@ document.getElementById("tempoSlider").oninput = (e) => {
 };
 
 // CRT power-off: white overlay retracts top-to-bottom into a thin line at the
-// bottom edge, then snaps out. transformOrigin "bottom center" anchors scaleY
-// at the bottom so the top edge descends — not a center-split.
+// bottom edge, then snaps out. .face is always position:relative in CSS so no
+// dynamic position toggling is needed here (that toggle caused the layout shift).
 function crtCollapse() {
   const face = document.querySelector(".face");
   const el = document.createElement("div");
   Object.assign(el.style, {
     position: "absolute", inset: "0",
     background: "white",
-    borderRadius: "10px",
     pointerEvents: "none",
     zIndex: "10",
     transformOrigin: "bottom center",
-    animation: "crt-collapse 0.36s ease-in forwards",
+    animation: "crt-collapse 0.07s ease-in forwards",
   });
-  const wasStatic = getComputedStyle(face).position === "static";
-  if (wasStatic) face.style.position = "relative";
   face.appendChild(el);
-  setTimeout(() => {
-    if (face.contains(el)) face.removeChild(el);
-    if (wasStatic) face.style.position = "";
-  }, 500);
+  setTimeout(() => { if (face.contains(el)) face.removeChild(el); }, 200);
 }
 
 // --- mic toggle ---

@@ -63,7 +63,7 @@ export function micOnSound() {
   ws.curve = distortionCurve(280);
   ws.oversample = "2x";
   g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.55, t + 0.004);
+  g.gain.linearRampToValueAtTime(0.825, t + 0.004);
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
   osc.connect(ws).connect(g).connect(ac.destination);
   osc.start(t);
@@ -85,7 +85,7 @@ export function micOffSound() {
   ws.curve = distortionCurve(480);
   ws.oversample = "2x";
   g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.45, t + 0.007);
+  g.gain.linearRampToValueAtTime(0.675, t + 0.007);
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
   osc.connect(ws).connect(g).connect(ac.destination);
   osc.start(t);
@@ -99,7 +99,7 @@ export function micOffSound() {
   const noiseSrc = ac.createBufferSource();
   noiseSrc.buffer = buf;
   const ng = ac.createGain();
-  ng.gain.setValueAtTime(0.12, t);
+  ng.gain.setValueAtTime(0.18, t);
   ng.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
   noiseSrc.connect(ng).connect(ac.destination);
   noiseSrc.start(t);
@@ -116,8 +116,8 @@ export function playTone(freq, durMs) {
     osc.frequency.value = freq;
     const t = S.audioCtx.currentTime;
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.18, t + 0.02);
-    g.gain.setValueAtTime(0.18, t + durMs / 1000 - 0.05);
+    g.gain.linearRampToValueAtTime(0.27, t + 0.02);
+    g.gain.setValueAtTime(0.27, t + durMs / 1000 - 0.05);
     g.gain.linearRampToValueAtTime(0, t + durMs / 1000);
     osc.connect(g).connect(S.audioCtx.destination);
     osc.start(t);
