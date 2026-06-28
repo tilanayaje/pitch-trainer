@@ -45,7 +45,7 @@ export async function runDrill() {
     }
   }
 
-  // --- RESPONSE (sing back; target + playhead always shown, live pitch line optional) ---
+  // --- RESPONSE (sing back; target + playhead shown if playheadEnabled; live pitch line if concurrentEnabled) ---
   if (!S.abort) {
     S.phase = "RESPONSE";
     S.drawLiveDuringResponse = S.concurrentEnabled;

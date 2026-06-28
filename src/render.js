@@ -39,8 +39,8 @@ export function drawPlot(opts = {}) {
     ctx.fillText(lab.padEnd(3) + " " + freqToName(midiToFreq(m)), 6, y);
   }
 
-  // target contour (stepped) — shown in preplay, review, and always during response
-  const showTarget = opts.preplay || opts.review || S.phase === "RESPONSE";
+  // target contour (stepped) — shown in preplay, review, and during response when playhead is on
+  const showTarget = opts.preplay || opts.review || (S.phase === "RESPONSE" && S.playheadEnabled);
   if (showTarget) {
     const dur = S.currentDrill.noteDur * S.tempo;
     const step = stepMs(S.currentDrill) * S.tempo;
@@ -63,8 +63,8 @@ export function drawPlot(opts = {}) {
     });
   }
 
-  // playhead: vertical sweep during response so the user knows where they are in time
-  if (S.phase === "RESPONSE") {
+  // playhead: vertical sweep during response, only when the timing-guide toggle is on
+  if (S.phase === "RESPONSE" && S.playheadEnabled) {
     const px = xFor(Math.min(S.recElapsed, recPhrase()));
     ctx.save();
     ctx.strokeStyle = "#00d4ff";

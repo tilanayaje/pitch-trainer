@@ -20,6 +20,7 @@ export const S = {
   tolerance: 50,   // ± cents counted as "in band"
   tempo: 1,        // speed multiplier applied to all note durations (0.5–1.5)
   concurrentEnabled: false, // user toggle: show the live line while singing
+  playheadEnabled: false,   // user toggle: show target note-map + timing playhead during response
 
   // --- run-time flags ---
   drawLiveDuringResponse: false,

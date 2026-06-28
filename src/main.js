@@ -56,6 +56,7 @@ tonicSel.onchange = (e) => {
 // --- settings ---
 document.getElementById("tolInput").onchange = (e) => { S.tolerance = +e.target.value; };
 document.getElementById("concurrentChk").onchange = (e) => { S.concurrentEnabled = e.target.checked; };
+document.getElementById("playheadChk").onchange = (e) => { S.playheadEnabled = e.target.checked; };
 const tempoVal = document.getElementById("tempoVal");
 document.getElementById("tempoSlider").oninput = (e) => {
   S.tempo = +e.target.value;
