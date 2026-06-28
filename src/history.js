@@ -45,7 +45,7 @@ export function saveAttempt(scores, drill, tonicMidi) {
 }
 
 export function clearHistory() {
-  if (!confirm("Clear all practice history?")) return;
+  if (load().length === 0) return;
   try { localStorage.removeItem(KEY); } catch {}
   renderHistory();
 }
@@ -67,6 +67,8 @@ export function renderHistory() {
   const list = document.getElementById("historyList");
   if (!list) return;
   const records = load();
+  const btn = document.getElementById("clearHistBtn");
+  if (btn) btn.disabled = records.length === 0;
   if (records.length === 0) {
     list.innerHTML = '<div class="hist-empty">No attempts yet.</div>';
     return;
