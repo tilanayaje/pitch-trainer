@@ -2,6 +2,8 @@
 
 This app is a free alternative to websites that show pitch in real time. It also has Solfège-centered drills for hitting the right pitch and sustaining it. I personally use it for practice and like it.
 
+Try it out at https://tilanayaje.github.io/pitch-trainer/ ! 
+
 ## Tips for best results
 - Eliminate any background noise
 - Don't be too quiet
