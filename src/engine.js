@@ -31,8 +31,8 @@ export async function runDrill() {
   for (let i = 0; i < drill.notes.length && !S.abort; i++) {
     S.activeNote = i;
     drawPlot({ preplay: true });
-    await playTone(freqForDegree(drill.notes[i], S.tonicMidi), drill.noteDur);
-    if (i < drill.notes.length - 1) await sleep(NOTE_GAP);
+    await playTone(freqForDegree(drill.notes[i], S.tonicMidi), drill.noteDur * S.tempo);
+    if (i < drill.notes.length - 1) await sleep(NOTE_GAP * S.tempo);
   }
   S.activeNote = -1;
 
@@ -45,12 +45,13 @@ export async function runDrill() {
     }
   }
 
-  // --- RESPONSE (sing back; blind unless the live-line toggle is on) ---
+  // --- RESPONSE (sing back; target + playhead always shown, live pitch line optional) ---
   if (!S.abort) {
     S.phase = "RESPONSE";
     S.drawLiveDuringResponse = S.concurrentEnabled;
-    const recTotal = drill.notes.length * stepMs(drill);
+    const recTotal = drill.notes.length * stepMs(drill) * S.tempo;
     S.trace = [];
+    S.recElapsed = 0;
     S.recStart = performance.now();
     S.recording = true;
     status("singing…" + (S.drawLiveDuringResponse ? " (live line on)" : ""));
@@ -63,7 +64,7 @@ export async function runDrill() {
   // --- REVIEW ---
   if (!S.abort) {
     S.phase = "REVIEW";
-    const scores = scoreAttempt(S.trace, drill, S.tonicMidi, S.tolerance);
+    const scores = scoreAttempt(S.trace, drill, S.tonicMidi, S.tolerance, S.tempo);
     drawPlot({ review: true });
     renderScores(scores);
     status("result");

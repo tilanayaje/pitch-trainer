@@ -5,10 +5,10 @@
 import { cents, freqForDegree } from "./theory.js";
 import { TAIL_TRIM, stepMs } from "./drills.js";
 
-export function scoreAttempt(trace, drill, tonicMidi, tolerance) {
+export function scoreAttempt(trace, drill, tonicMidi, tolerance, tempo = 1) {
   const notes = drill.notes;
-  const dur = drill.noteDur;
-  const step = stepMs(drill);
+  const dur = drill.noteDur * tempo;
+  const step = stepMs(drill) * tempo;
   const out = [];
 
   for (let i = 0; i < notes.length; i++) {

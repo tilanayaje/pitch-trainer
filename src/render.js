@@ -16,7 +16,7 @@ function yFor(f) {
   return 16 + ((hi - m) / (hi - lo)) * (cv.height - 32);
 }
 
-const recPhrase = () => S.currentDrill.notes.length * stepMs(S.currentDrill);
+const recPhrase = () => S.currentDrill.notes.length * stepMs(S.currentDrill) * S.tempo;
 const xFor = (t) => 70 + (t / recPhrase()) * (cv.width - 84);
 
 export function drawPlot(opts = {}) {
@@ -39,11 +39,11 @@ export function drawPlot(opts = {}) {
     ctx.fillText(lab.padEnd(3) + " " + freqToName(midiToFreq(m)), 6, y);
   }
 
-  // target contour (stepped) — shown in preplay & review, hidden while singing blind
-  const showTarget = opts.preplay || opts.review || S.drawLiveDuringResponse;
+  // target contour (stepped) — shown in preplay, review, and always during response
+  const showTarget = opts.preplay || opts.review || S.phase === "RESPONSE";
   if (showTarget) {
-    const dur = S.currentDrill.noteDur;
-    const step = stepMs(S.currentDrill);
+    const dur = S.currentDrill.noteDur * S.tempo;
+    const step = stepMs(S.currentDrill) * S.tempo;
     S.currentDrill.notes.forEach((lab, i) => {
       const tf = freqForDegree(lab, S.tonicMidi);
       const y = yFor(tf);
@@ -61,6 +61,21 @@ export function drawPlot(opts = {}) {
       const yt = yFor(tf * Math.pow(2, -S.tolerance / 1200));
       ctx.fillRect(x0 + 2, yb, x1 - x0 - 4, yt - yb);
     });
+  }
+
+  // playhead: vertical sweep during response so the user knows where they are in time
+  if (S.phase === "RESPONSE") {
+    const px = xFor(Math.min(S.recElapsed, recPhrase()));
+    ctx.save();
+    ctx.strokeStyle = "#00d4ff";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#00d4ff";
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.moveTo(px, 8);
+    ctx.lineTo(px, cv.height - 8);
+    ctx.stroke();
+    ctx.restore();
   }
 
   // your trace (live during response if toggled, always in review)

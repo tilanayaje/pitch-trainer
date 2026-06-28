@@ -18,6 +18,7 @@ export const S = {
   currentDrill: DRILLS.do_re_do,
   tonicMidi: 48,   // C3
   tolerance: 50,   // ± cents counted as "in band"
+  tempo: 1,        // speed multiplier applied to all note durations (0.5–1.5)
   concurrentEnabled: false, // user toggle: show the live line while singing
 
   // --- run-time flags ---
@@ -29,5 +30,6 @@ export const S = {
   recording: false,
   trace: [],       // [{ t: ms-since-start, f: Hz }]
   recStart: 0,
+  recElapsed: 0,   // ms since recStart, updated each frame; drives the playhead
   activeNote: -1,  // index of the note currently being played in preplay
 };

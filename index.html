@@ -55,14 +55,18 @@
       <label>Tolerance (± cents)
         <input type="number" id="tolInput" value="50" min="10" max="100" step="5" style="width:80px">
       </label>
+      <label>Tempo
+        <input type="range" id="tempoSlider" min="0.5" max="1.5" step="0.05" value="1" style="width:100px">
+        <span id="tempoVal">1.0×</span>
+      </label>
       <label class="toggle" style="align-self:flex-end">
         <input type="checkbox" id="concurrentChk"> live line while singing
       </label>
       <button id="startBtn" disabled>Start drill</button>
       <button id="stopBtn" class="ghost" disabled>Stop</button>
     </div>
-    <div class="hint">Target plays on the grid → count-in → sing it back from memory → score shown after.&nbsp;
-      Turn on "live line while singing" to see your pitch trace during the attempt.</div>
+    <div class="hint">Target plays on the grid → count-in → sing it back (grid + playhead always visible) → score shown after.&nbsp;
+      Turn on "live line while singing" to also see your pitch trace during the attempt.</div>
   </div>
 
   <!-- VIZ -->

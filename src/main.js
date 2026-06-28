@@ -14,10 +14,12 @@ function loop() {
   if (!S.micOn) return;
   readPitch();
   updateLiveTuner();
-  if (S.recording) sampleTrace();
-  if (S.drawLiveDuringResponse) drawPlot();
-  else if (S.phase === "REVIEW") drawPlot({ review: true });
-  else if (S.holdReview) drawPlot({ review: true });
+  if (S.recording) {
+    sampleTrace();
+    S.recElapsed = performance.now() - S.recStart;
+  }
+  if (S.phase === "RESPONSE") drawPlot();
+  else if (S.phase === "REVIEW" || S.holdReview) drawPlot({ review: true });
   requestAnimationFrame(loop);
 }
 
@@ -54,6 +56,11 @@ tonicSel.onchange = (e) => {
 // --- settings ---
 document.getElementById("tolInput").onchange = (e) => { S.tolerance = +e.target.value; };
 document.getElementById("concurrentChk").onchange = (e) => { S.concurrentEnabled = e.target.checked; };
+const tempoVal = document.getElementById("tempoVal");
+document.getElementById("tempoSlider").oninput = (e) => {
+  S.tempo = +e.target.value;
+  tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
+};
 
 // --- mic toggle ---
 document.getElementById("micBtn").onclick = async (e) => {
