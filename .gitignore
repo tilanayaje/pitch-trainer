@@ -1,0 +1,16 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# logs
+*.log
+
+# dependencies / build (none today; here for when you add tooling)
+node_modules/
+dist/
+build/
+
+# local-only scratch — adjust if dev/ should actually be tracked
+dev/

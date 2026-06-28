@@ -11,7 +11,7 @@ export function setControls(running) {
   document.getElementById("startBtn").disabled = running || !S.micOn;
   document.getElementById("stopBtn").disabled = !running;
   document.getElementById("micBtn").disabled = running;
-  ["drillSel", "tonicSel", "tolInput", "retentionChk"].forEach(
+  ["drillSel", "tonicSel", "tolInput"].forEach(
     (id) => (document.getElementById(id).disabled = running)
   );
 }
