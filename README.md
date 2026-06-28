@@ -22,19 +22,18 @@ The glyph column (♭ / ♯ / ✓) uses a tight ±15-cent musical threshold, ind
 ## Project structure
 
 ```
-index.html             The page itself — what loads in the browser.
-manifest.webmanifest   App metadata (name, colors) for installing it like an app.
+index.html             The page itself
+manifest.webmanifest   App metadata
 css/
-  styles.css           All the styling — the look, layout, and colors.
-src/
+  styles.css           Styling
   main.js              Startup: wires up the buttons and runs the main loop.
   state.js             One shared object holding the app's current state.
-  theory.js            Music math — notes, frequencies, cents, solfège.
+  theory.js            Music math (notes, frequencies, cents, solfège)
   pitch.js             Listens to your voice and figures out the pitch.
   audio.js             Handles the mic and plays the target tones.
   drills.js            The list of drills and their timing.
   engine.js            Runs a drill: plays the note, records you, scores it.
-  scoring.js           Grades each note — how flat/sharp, how steady, how fast.
+  scoring.js           Grades each note (how flat/sharp, how steady, how fast)
   render.js            Draws the pitch graph (your line vs. the target).
   tuner.js             The live tuner readout up top.
   ui.js                Updates the on-screen text, controls, and results table.
