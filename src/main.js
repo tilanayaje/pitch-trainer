@@ -3,7 +3,7 @@
 import { S } from "./state.js";
 import { DRILLS } from "./drills.js";
 import { freqToName, midiToFreq } from "./theory.js";
-import { enableMic, disableMic, readPitch } from "./audio.js";
+import { enableMic, disableMic, readPitch, micOnSound, micOffSound } from "./audio.js";
 import { drawPlot } from "./render.js";
 import { updateLiveTuner } from "./tuner.js";
 import { runDrill, sampleTrace } from "./engine.js";
@@ -64,6 +64,24 @@ document.getElementById("tempoSlider").oninput = (e) => {
   tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
 };
 
+// CRT power-off: white overlay retracts top-to-bottom into a thin line at the
+// bottom edge, then snaps out. .face is always position:relative in CSS so no
+// dynamic position toggling is needed here (that toggle caused the layout shift).
+function crtCollapse() {
+  const face = document.querySelector(".face");
+  const el = document.createElement("div");
+  Object.assign(el.style, {
+    position: "absolute", inset: "0",
+    background: "white",
+    pointerEvents: "none",
+    zIndex: "10",
+    transformOrigin: "bottom center",
+    animation: "crt-collapse 0.07s ease-in forwards",
+  });
+  face.appendChild(el);
+  setTimeout(() => { if (face.contains(el)) face.removeChild(el); }, 200);
+}
+
 // --- mic toggle ---
 document.getElementById("micBtn").onclick = async (e) => {
   if (S.phase !== "IDLE") return; // don't toggle mid-drill
@@ -75,10 +93,14 @@ document.getElementById("micBtn").onclick = async (e) => {
     document.getElementById("micState").textContent = "mic off";
     document.getElementById("startBtn").disabled = true;
     status("mic off");
+    // Sound and visual fire together ~350 ms after the click — the discharge
+    // lag of a real amp/CRT after the switch is flipped.
+    setTimeout(() => { micOffSound(); crtCollapse(); }, 350);
     return;
   }
   try {
     await enableMic();
+    micOnSound();
     loop();
     e.target.textContent = "Turn mic off";
     e.target.classList.add("ghost");
