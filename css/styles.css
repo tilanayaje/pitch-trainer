@@ -94,12 +94,13 @@ td{color:var(--walnut);}
 .hist-result{flex-shrink:0;}
 .hist-empty{color:var(--muted);font-size:11px;padding:6px 0;}
 
-/* CRT power-off: full white → thin horizontal line → gone */
+/* CRT power-off: white retracts top-to-bottom (transform-origin: bottom on the element)
+   → thin line at bottom edge → snaps out */
 @keyframes crt-collapse {
-  0%   { transform: scaleY(1);     opacity: 1;    }
-  50%  { transform: scaleY(0.028); opacity: 1;    }
-  78%  { transform: scaleY(0.014); opacity: 0.85; }
-  100% { transform: scaleY(0);     opacity: 0;    }
+  0%   { transform: scaleY(1);     opacity: 1;   }
+  65%  { transform: scaleY(0.025); opacity: 1;   }
+  85%  { transform: scaleY(0.01);  opacity: 0.7; }
+  100% { transform: scaleY(0);     opacity: 0;   }
 }
 
 @media (prefers-reduced-motion:reduce){ .needle{transition:none;} }

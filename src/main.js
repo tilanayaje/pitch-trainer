@@ -64,9 +64,9 @@ document.getElementById("tempoSlider").oninput = (e) => {
   tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
 };
 
-// CRT power-off collapse: white overlay blooms then squashes vertically to a
-// thin line, then snaps out — the classic tube/CRT discharge look.
-// The @keyframes live in css/styles.css (crt-collapse).
+// CRT power-off: white overlay retracts top-to-bottom into a thin line at the
+// bottom edge, then snaps out. transformOrigin "bottom center" anchors scaleY
+// at the bottom so the top edge descends — not a center-split.
 function crtCollapse() {
   const face = document.querySelector(".face");
   const el = document.createElement("div");
@@ -76,6 +76,7 @@ function crtCollapse() {
     borderRadius: "10px",
     pointerEvents: "none",
     zIndex: "10",
+    transformOrigin: "bottom center",
     animation: "crt-collapse 0.36s ease-in forwards",
   });
   const wasStatic = getComputedStyle(face).position === "static";
@@ -98,9 +99,9 @@ document.getElementById("micBtn").onclick = async (e) => {
     document.getElementById("micState").textContent = "mic off";
     document.getElementById("startBtn").disabled = true;
     status("mic off");
-    // Sound and visual sync together after a brief discharge delay,
-    // mimicking the lag of a real amp/CRT after the switch is flipped.
-    setTimeout(() => { micOffSound(); crtCollapse(); }, 320);
+    // Sound and visual fire together ~350 ms after the click — the discharge
+    // lag of a real amp/CRT after the switch is flipped.
+    setTimeout(() => { micOffSound(); crtCollapse(); }, 350);
     return;
   }
   try {
