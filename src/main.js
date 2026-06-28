@@ -16,7 +16,7 @@ function loop() {
   updateLiveTuner();
   if (S.recording) sampleTrace();
   if (S.drawLiveDuringResponse) drawPlot();
-  else if (S.phase === "REVIEW") drawPlot(S.showReviewPlot ? { review: true } : {});
+  else if (S.phase === "REVIEW") drawPlot({ review: true });
   else if (S.holdReview) drawPlot({ review: true });
   requestAnimationFrame(loop);
 }
@@ -53,7 +53,6 @@ tonicSel.onchange = (e) => {
 
 // --- settings ---
 document.getElementById("tolInput").onchange = (e) => { S.tolerance = +e.target.value; };
-document.getElementById("retentionChk").onchange = (e) => { S.retentionTest = e.target.checked; };
 document.getElementById("concurrentChk").onchange = (e) => { S.concurrentEnabled = e.target.checked; };
 
 // --- mic toggle ---
