@@ -1,10 +1,12 @@
-# PitchTrainer
+<h1 align="center">PitchTrainer</h1>
+<p align="center">
+  <img width="462" height="938" src="https://github.com/user-attachments/assets/de0d59e9-777b-4d0d-91ff-30419085008e" />
+  <p align="center" >Try it out at https://tilanayaje.github.io/pitch-trainer/ ! </p>
+</p>
+
+---
 
 This app is a totally free alternative to apps that show monophonic pitch in real time, such as Singing Carrots. It also has Solfège-centered drills for hitting the right pitch and sustaining it. I personally use it for practice and like it.
-
-No backend; everything is on your local device. No account registration needed. Infinite drill attempts, infinite usage. 
-
-Try it out at https://tilanayaje.github.io/pitch-trainer/ ! 
 
 ## Tips for best results
 - Eliminate any background noise
