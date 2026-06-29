@@ -75,14 +75,16 @@
           <div class="knob-val" id="tempoVal">1.0×</div>
         </div>
       </label>
-      <label class="toggle hw-toggle" style="align-self:flex-end">
-        <span class="sw"><input type="checkbox" id="concurrentChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
-        live line while singing
-      </label>
-      <label class="toggle hw-toggle" style="align-self:flex-end">
-        <span class="sw"><input type="checkbox" id="playheadChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
-        playhead (timing guide)
-      </label>
+      <div style="display:flex;flex-direction:column;gap:8px;align-self:flex-end">
+        <label class="toggle hw-toggle">
+          <span class="sw"><input type="checkbox" id="concurrentChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
+          live line while singing
+        </label>
+        <label class="toggle hw-toggle">
+          <span class="sw"><input type="checkbox" id="playheadChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
+          playhead (timing guide)
+        </label>
+      </div>
       <button id="startBtn" disabled>Start drill</button>
       <button id="stopBtn" class="ghost" disabled>Stop</button>
     </div>

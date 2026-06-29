@@ -101,7 +101,6 @@ document.getElementById("micBtn").onclick = async (e) => {
     document.getElementById("micStateText").textContent = "mic off";
     document.getElementById("micLed").classList.remove("rled-on");
     document.getElementById("startBtn").disabled = true;
-    status("mic off");
     // Sound and visual fire together ~350 ms after the click — the discharge
     // lag of a real amp/CRT after the switch is flipped.
     setTimeout(() => { micOffSound(); crtCollapse(); }, 350);

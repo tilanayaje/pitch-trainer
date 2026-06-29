@@ -1,8 +1,8 @@
-// Rotary knob component (simplified aesthetic)
-// makeKnob(containerEl, { min, max, step, value, onChange, formatVal })
+// Rotary knob component. Canvas-drawn, drag up/down to change value.
+// makeKnob(containerEl, { min, max, step, value, onChange, formatVal }) → { getValue, setValue }
 
-const A_START = (135 * Math.PI) / 180;
-const A_RANGE = (270 * Math.PI) / 180;
+const A_START = (135 * Math.PI) / 180; // 7:30 o'clock (SW) in canvas coords
+const A_RANGE = (270 * Math.PI) / 180; // 270° clockwise sweep
 
 function draw(canvas, value01) {
   const ctx = canvas.getContext("2d");
@@ -10,111 +10,50 @@ function draw(canvas, value01) {
   const H = canvas.height;
   const cx = W / 2;
   const cy = H / 2;
-
   const R  = Math.min(W, H) / 2 - 2;
-  const bR = R * 0.75;
 
   ctx.clearRect(0, 0, W, H);
 
-  // Background
-  ctx.fillStyle = "#14070A";
-  ctx.fillRect(0, 0, W, H);
-
-  // Outer ring (flat burgundy-brown)
+  // Knob body — reflective black disc
+  const bodyGrd = ctx.createRadialGradient(cx - R * 0.1, cy - R * 0.1, R * 0.04, cx, cy, R);
+  bodyGrd.addColorStop(0, "#3C2A18");
+  bodyGrd.addColorStop(1, "#160C06");
   ctx.beginPath();
   ctx.arc(cx, cy, R, 0, Math.PI * 2);
-  ctx.fillStyle = "#2A0F14";
+  ctx.fillStyle = bodyGrd;
   ctx.fill();
 
-  ctx.strokeStyle = "#3A1418";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Tick marks (WHITE, inward)
-  for (let i = 0; i <= 10; i++) {
-    const a = A_START + (i / 10) * A_RANGE;
-    const major = i === 0 || i === 5 || i === 10;
-
-    const r1 = R - 2;
-    const r2 = major ? R - 12 : R - 8;
-
-    ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
-    ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
-    ctx.strokeStyle = "#FFFFFF";
-    ctx.lineWidth = major ? 2 : 1;
-    ctx.stroke();
-
-    // Labels on major ticks (centered properly)
-    if (major) {
-      const labelR = R - 22;
-      const lx = cx + Math.cos(a) * labelR;
-      const ly = cy + Math.sin(a) * labelR;
-
-      ctx.fillStyle = "rgba(255,255,255,0.85)";
-      ctx.font = "10px sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      const label = i === 0 ? "0" : i === 5 ? "50" : "100";
-      ctx.fillText(label, lx, ly);
-    }
-  }
-
-  // Knob body (flat dark burgundy)
+  // Rim — inset shadow ring
   ctx.beginPath();
-  ctx.arc(cx, cy, bR, 0, Math.PI * 2);
-  ctx.fillStyle = "#1A0A0D";
-  ctx.fill();
-
-  ctx.strokeStyle = "#2E0F14";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Track
-  const tR = bR * 0.80;
-  ctx.beginPath();
-  ctx.arc(cx, cy, tR, A_START, A_START + A_RANGE);
-  ctx.strokeStyle = "#3A1418";
-  ctx.lineWidth = 4;
-  ctx.stroke();
-
-  // Active arc
-  const cAngle = A_START + value01 * A_RANGE;
-
-  if (value01 > 0.001) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, tR, A_START, cAngle);
-    ctx.strokeStyle = "#FFFFFF";
-    ctx.lineWidth = 4;
-    ctx.stroke();
-  }
-
-  // Indicator line (kept, white)
-  const iR = bR * 0.65;
-  const ix = cx + Math.cos(cAngle) * iR;
-  const iy = cy + Math.sin(cAngle) * iR;
-
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(ix, iy);
-  ctx.strokeStyle = "#FFFFFF";
+  ctx.arc(cx, cy, R - 0.5, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(0,0,0,0.65)";
   ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  // Center hub
+  // Indicator line — floats on the disc, does not pass through center
+  const cAngle = A_START + value01 * A_RANGE;
+  const sx = cx + Math.cos(cAngle) * (R * 0.25);
+  const sy = cy + Math.sin(cAngle) * (R * 0.25);
+  const ix = cx + Math.cos(cAngle) * (R * 0.87);
+  const iy = cy + Math.sin(cAngle) * (R * 0.87);
+  ctx.save();
+  ctx.shadowColor = "#F0962E";
+  ctx.shadowBlur  = 8;
   ctx.beginPath();
-  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fill();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(ix, iy);
+  ctx.strokeStyle = "#F0962E";
+  ctx.lineWidth   = 2.5;
+  ctx.lineCap     = "round";
+  ctx.stroke();
+  ctx.restore();
 }
 
 export function makeKnob(container, { min, max, step, value, onChange, formatVal }) {
   const canvas = container.querySelector("canvas");
   const valEl  = container.querySelector(".knob-val");
-
-  let current = value;
-  let dragStartY = null;
+  let current      = value;
+  let dragStartY   = null;
   let dragStartVal = null;
 
   const norm  = (v) => (v - min) / (max - min);
@@ -130,34 +69,33 @@ export function makeKnob(container, { min, max, step, value, onChange, formatVal
 
   const isDisabled = () => container.dataset.disabled === "true";
 
+  // Mouse — relative-to-start so fast moves don't skip
   canvas.addEventListener("mousedown", (e) => {
     if (isDisabled()) return;
-    dragStartY = e.clientY;
+    dragStartY   = e.clientY;
     dragStartVal = current;
-
+    e.preventDefault();
     const onMove = (ev) => {
-      const dy = dragStartY - ev.clientY;
+      const dy = dragStartY - ev.clientY; // up = positive = increase
       setValue(dragStartVal + dy * (max - min) / 150);
       onChange(current);
     };
-
     const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
       dragStartY = dragStartVal = null;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup",   onUp);
     };
-
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    window.addEventListener("mouseup",   onUp);
   });
 
+  // Touch
   canvas.addEventListener("touchstart", (e) => {
     if (isDisabled()) return;
-    dragStartY = e.touches[0].clientY;
+    dragStartY   = e.touches[0].clientY;
     dragStartVal = current;
     e.preventDefault();
   }, { passive: false });
-
   canvas.addEventListener("touchmove", (e) => {
     if (dragStartY === null) return;
     const dy = dragStartY - e.touches[0].clientY;
@@ -165,34 +103,23 @@ export function makeKnob(container, { min, max, step, value, onChange, formatVal
     onChange(current);
     e.preventDefault();
   }, { passive: false });
+  canvas.addEventListener("touchend", () => { dragStartY = dragStartVal = null; });
 
-  canvas.addEventListener("touchend", () => {
-    dragStartY = dragStartVal = null;
-  });
-
+  // Keyboard accessibility
   canvas.addEventListener("keydown", (e) => {
     if (isDisabled()) return;
-
     if (e.key === "ArrowUp" || e.key === "ArrowRight") {
-      setValue(current + step);
-      onChange(current);
-      e.preventDefault();
+      setValue(current + step); onChange(current); e.preventDefault();
     } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
-      setValue(current - step);
-      onChange(current);
-      e.preventDefault();
+      setValue(current - step); onChange(current); e.preventDefault();
     }
   });
 
-  canvas.setAttribute("role", "slider");
+  canvas.setAttribute("role",         "slider");
   canvas.setAttribute("aria-valuemin", min);
   canvas.setAttribute("aria-valuemax", max);
   canvas.setAttribute("aria-valuenow", current);
 
   setValue(value);
-
-  return {
-    getValue: () => current,
-    setValue
-  };
+  return { getValue: () => current, setValue };
 }

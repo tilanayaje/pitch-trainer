@@ -158,6 +158,39 @@ export function micOffSound() {
   setTimeout(() => ac.close(), 500);
 }
 
+// Short percussive metronome tick for count-in numbers.
+export function countTick() {
+  const ac = S.audioCtx;
+  const t = ac.currentTime;
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 880;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.3, t + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+  osc.connect(g).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + 0.08);
+}
+
+// Distinct "go" beep for "SING" — higher pitch, longer, clearly different from tick.
+export function countGo() {
+  const ac = S.audioCtx;
+  const t = ac.currentTime;
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 1320;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.35, t + 0.005);
+  g.gain.setValueAtTime(0.35, t + 0.1);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+  osc.connect(g).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + 0.19);
+}
+
 // Play a target tone with a short attack/release envelope to avoid clicks.
 export function playTone(freq, durMs) {
   return new Promise((res) => {

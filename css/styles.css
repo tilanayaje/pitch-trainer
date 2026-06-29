@@ -100,7 +100,7 @@ main{max-width:1000px;margin:8px auto 24px;padding:0 20px;display:flex;flex-dire
 /* controls */
 .controls{padding:12px 16px;}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
-label{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:flex;flex-direction:column;gap:5px;}
+label{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:flex;flex-direction:column;gap:5px;align-items:center;}
 
 /* ENGRAVED SELECT — recessed, inset shadow, custom arrow */
 select{
@@ -184,9 +184,8 @@ button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
   opacity:.4; cursor:not-allowed;
 }
 .knob-val{
-  font-size:11px; color:var(--phos); letter-spacing:.06em;
+  font-size:11px; color:var(--walnut-deep); letter-spacing:.06em;
   min-width:52px; text-align:center;
-  text-shadow:0 0 8px rgba(240,150,46,.4);
 }
 
 /* screen / plot */

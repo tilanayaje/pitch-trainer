@@ -5,7 +5,7 @@
 import { S } from "./state.js";
 import { stepMs, NOTE_GAP } from "./drills.js";
 import { freqForDegree } from "./theory.js";
-import { playTone } from "./audio.js";
+import { playTone, countTick, countGo } from "./audio.js";
 import { scoreAttempt } from "./scoring.js";
 import { drawPlot } from "./render.js";
 import { status, setControls, renderScores } from "./ui.js";
@@ -41,6 +41,7 @@ export async function runDrill() {
   if (!S.abort) {
     for (const w of ["5", "4", "3", "2", "1", "SING"]) {
       status(w);
+      if (w === "SING") countGo(); else countTick();
       await sleep(450);
       if (S.abort) break;
     }
