@@ -6,12 +6,34 @@ import { freqToMidi, freqToName, midiToFreq, cents } from "./theory.js";
 
 const IN_TUNE = 10; // ± cents shown green / centered
 
+let lastUIState = null;
+
 export function updateLiveTuner() {
   const nEl = document.getElementById("liveNote");
   const cEl = document.getElementById("liveCents");
   const fEl = document.getElementById("liveFill");
   const fl = document.getElementById("flatSym");
   const sh = document.getElementById("sharpSym");
+
+  // FREEZE FRAME MODE
+  if (!S.micOn && lastUIState) {
+    const s = lastUIState;
+
+    nEl.textContent = s.note;
+    nEl.style.color = s.color;
+    nEl.style.textShadow = `0 0 14px ${s.color}, 0 0 32px ${s.color}88`;
+
+    cEl.textContent = `${s.freq.toFixed(1)} Hz · ${s.cents > 0 ? "+" : ""}${s.cents.toFixed(0)} ¢`;
+
+    fEl.style.left = `${s.fill}%`;
+    fEl.style.background = s.color;
+    fEl.style.boxShadow = `0 0 5px ${s.color}, 0 0 16px ${s.color}BB, 0 0 30px ${s.color}55`;
+
+    fl.classList.toggle("lit-flat", s.flat);
+    sh.classList.toggle("lit-sharp", s.sharp);
+
+    return;
+  }
 
   if (S.currentFreq <= 0) {
     nEl.textContent = "—";
@@ -39,4 +61,15 @@ export function updateLiveTuner() {
   fEl.style.boxShadow = `0 0 5px ${col}, 0 0 16px ${col}BB, 0 0 30px ${col}55`;
   fl.classList.toggle("lit-flat",  dev < -IN_TUNE);
   sh.classList.toggle("lit-sharp", dev > IN_TUNE);
+
+  // snapshot for freeze frame
+  lastUIState = {
+    note: freqToName(S.currentFreq),
+    cents: dev,
+    freq: S.currentFreq,
+    color: col,
+    fill: 50 + Math.max(-50, Math.min(50, dev)),
+    flat: dev < -IN_TUNE,
+    sharp: dev > IN_TUNE
+  };
 }
