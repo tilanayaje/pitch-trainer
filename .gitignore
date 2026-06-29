@@ -14,3 +14,6 @@ build/
 
 # local-only scratch — adjust if dev/ should actually be tracked
 dev/
+
+# my personal notes
+NOTES.text

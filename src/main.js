@@ -9,6 +9,7 @@ import { updateLiveTuner } from "./tuner.js";
 import { runDrill, sampleTrace } from "./engine.js";
 import { status } from "./ui.js";
 import { renderHistory, clearHistory } from "./history.js";
+import { makeKnob } from "./knob.js";
 
 // --- render loop: runs only while the mic is on (started on enable, stops on disable) ---
 function loop() {
@@ -54,15 +55,22 @@ tonicSel.onchange = (e) => {
   drawPlot({ preplay: true });
 };
 
-// --- settings ---
-document.getElementById("tolInput").onchange = (e) => { S.tolerance = +e.target.value; };
+// --- rotary knobs ---
+makeKnob(document.getElementById("tolKnob"), {
+  min: 10, max: 100, step: 5, value: 50,
+  onChange: (v) => { S.tolerance = v; },
+  formatVal: (v) => `${v} ¢`,
+});
+
+makeKnob(document.getElementById("tempoKnob"), {
+  min: 0.5, max: 1.5, step: 0.05, value: 1,
+  onChange: (v) => { S.tempo = v; },
+  formatVal: (v) => `${v.toFixed(2).replace(/0$/, "")}×`,
+});
+
+// --- toggle switches (checkboxes inside .sw; wiring is identical) ---
 document.getElementById("concurrentChk").onchange = (e) => { S.concurrentEnabled = e.target.checked; };
-document.getElementById("playheadChk").onchange = (e) => { S.playheadEnabled = e.target.checked; };
-const tempoVal = document.getElementById("tempoVal");
-document.getElementById("tempoSlider").oninput = (e) => {
-  S.tempo = +e.target.value;
-  tempoVal.textContent = S.tempo.toFixed(2).replace(/0$/, "") + "×";
-};
+document.getElementById("playheadChk").onchange   = (e) => { S.playheadEnabled   = e.target.checked; };
 
 // CRT power-off: white overlay retracts top-to-bottom into a thin line at the
 // bottom edge, then snaps out. .face is always position:relative in CSS so no
@@ -90,7 +98,8 @@ document.getElementById("micBtn").onclick = async (e) => {
     updateLiveTuner(); // reset the strobe to "no signal" (loop has stopped)
     e.target.textContent = "Enable mic";
     e.target.classList.remove("ghost");
-    document.getElementById("micState").textContent = "mic off";
+    document.getElementById("micStateText").textContent = "mic off";
+    document.getElementById("micLed").classList.remove("rled-on");
     document.getElementById("startBtn").disabled = true;
     status("mic off");
     // Sound and visual fire together ~350 ms after the click — the discharge
@@ -104,7 +113,8 @@ document.getElementById("micBtn").onclick = async (e) => {
     loop();
     e.target.textContent = "Turn mic off";
     e.target.classList.add("ghost");
-    document.getElementById("micState").textContent = "mic on";
+    document.getElementById("micStateText").textContent = "mic on";
+    document.getElementById("micLed").classList.add("rled-on");
     document.getElementById("startBtn").disabled = false;
     status("mic ready");
     drawPlot({ preplay: true });

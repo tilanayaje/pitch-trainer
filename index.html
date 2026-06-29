@@ -31,7 +31,10 @@
   <div class="brushed hero">
     <div class="hero-row">
       <span class="eyebrow">Tuner</span>
-      <span class="eyebrow" id="micState" style="margin-left:auto">mic off</span>
+      <span class="eyebrow mic-state-row" style="margin-left:auto">
+        <span class="rled" id="micLed"></span>
+        <span id="micStateText">mic off</span>
+      </span>
       <button id="micBtn">Enable mic</button>
     </div>
     <div class="face">
@@ -61,17 +64,24 @@
         <select id="tonicSel"></select>
       </label>
       <label>Tolerance (± cents)
-        <input type="number" id="tolInput" value="50" min="10" max="100" step="5" style="width:80px">
+        <div class="knob-group" id="tolKnob">
+          <canvas width="72" height="72" tabindex="0"></canvas>
+          <div class="knob-val">50 ¢</div>
+        </div>
       </label>
       <label>Tempo
-        <input type="range" id="tempoSlider" min="0.5" max="1.5" step="0.05" value="1" style="width:100px">
-        <span id="tempoVal">1.0×</span>
+        <div class="knob-group" id="tempoKnob">
+          <canvas width="72" height="72" tabindex="0"></canvas>
+          <div class="knob-val" id="tempoVal">1.0×</div>
+        </div>
       </label>
-      <label class="toggle" style="align-self:flex-end">
-        <input type="checkbox" id="concurrentChk"> live line while singing
+      <label class="toggle hw-toggle" style="align-self:flex-end">
+        <span class="sw"><input type="checkbox" id="concurrentChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
+        live line while singing
       </label>
-      <label class="toggle" style="align-self:flex-end">
-        <input type="checkbox" id="playheadChk"> playhead (timing guide)
+      <label class="toggle hw-toggle" style="align-self:flex-end">
+        <span class="sw"><input type="checkbox" id="playheadChk"><span class="sw-track"><span class="sw-thumb"></span></span></span>
+        playhead (timing guide)
       </label>
       <button id="startBtn" disabled>Start drill</button>
       <button id="stopBtn" class="ghost" disabled>Stop</button>

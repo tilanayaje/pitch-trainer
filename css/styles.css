@@ -19,11 +19,45 @@ body{
   box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 12px 30px rgba(80,55,30,.16);
 }
 header{max-width:1000px;margin:12px auto 0;padding:6px 20px;display:flex;align-items:center;gap:12px;}
-.led{width:9px;height:9px;border-radius:50%;background:var(--led);box-shadow:0 0 10px var(--led);}
+
+/* RECESSED LED — power indicator in header */
+.led{
+  width:11px; height:11px; border-radius:50%; flex-shrink:0;
+  background:radial-gradient(circle at 35% 32%, #FFD878, var(--led) 55%, #8A4A0A);
+  border:1px solid #7A4A18;
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.35),
+    inset 0 -1px 1px rgba(255,210,80,0.2),
+    0 0 8px var(--led),
+    0 0 18px rgba(200,130,46,0.45),
+    0 1px 0 rgba(255,255,255,0.18);
+}
+
 h1{font-family:"Saira Condensed",sans-serif;font-weight:700;letter-spacing:.22em;font-size:15px;
    margin:0;text-transform:uppercase;color:#EFE4CE;}
 .sub{color:#B79B78;font-size:11px;letter-spacing:.05em;margin-left:auto;}
 main{max-width:1000px;margin:8px auto 24px;padding:0 20px;display:flex;flex-direction:column;gap:10px;}
+
+/* MIC STATE ROW with dedicated LED */
+.mic-state-row{display:inline-flex;align-items:center;gap:6px;}
+
+/* Recessed LED for mic state */
+.rled{
+  display:inline-block; width:9px; height:9px; border-radius:50%; flex-shrink:0;
+  background:radial-gradient(circle at 38% 34%, #2a1a0e, #120800);
+  border:1px solid #2a1608;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.08);
+  transition:background .25s, box-shadow .25s;
+}
+.rled.rled-on{
+  background:radial-gradient(circle at 34% 30%, #FFD878, var(--phos) 55%, #A05010);
+  border-color:#8A5018;
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.2),
+    inset 0 -1px 1px rgba(255,220,80,0.2),
+    0 0 7px var(--phos),
+    0 0 16px rgba(240,150,46,0.5);
+}
 
 /* hero strobe tuner */
 .hero{padding:12px 16px 14px;}
@@ -36,33 +70,124 @@ main{max-width:1000px;margin:8px auto 24px;padding:0 20px;display:flex;flex-dire
   box-shadow:inset 0 2px 22px rgba(0,0,0,.6), inset 0 0 0 1px rgba(240,150,46,.06);
 }
 .note{font-family:"Saira Condensed";font-weight:600;font-size:42px;line-height:1;color:var(--phos);
-      text-shadow:0 0 18px rgba(240,150,46,.4);letter-spacing:.02em;}
+      text-shadow:0 0 14px var(--phos), 0 0 32px rgba(240,150,46,.55);letter-spacing:.02em;}
 .readout{font-size:12px;color:#b0916a;margin-top:5px;letter-spacing:.06em;}
 .strobe{display:flex;align-items:center;gap:14px;margin-top:11px;}
+
+/* Flat/sharp symbols — stronger glow when lit */
 .sym{font-size:20px;color:#5a4630;width:18px;text-align:center;transition:color .1s,text-shadow .1s;}
-.sym.lit-flat{color:var(--phos);text-shadow:0 0 14px var(--phos);}
-.sym.lit-sharp{color:#E06A4A;text-shadow:0 0 14px #E06A4A;}
+.sym.lit-flat{
+  color:var(--phos);
+  text-shadow:0 0 6px var(--phos), 0 0 18px rgba(240,150,46,.85), 0 0 38px rgba(240,150,46,.4);
+}
+.sym.lit-sharp{
+  color:#E06A4A;
+  text-shadow:0 0 6px #E06A4A, 0 0 18px rgba(224,106,74,.85), 0 0 38px rgba(224,106,74,.4);
+}
 .track{position:relative;flex:1;height:24px;}
 .rule{position:absolute;left:0;right:0;top:50%;height:1px;background:#4a3420;}
 .detent{position:absolute;left:50%;top:3px;bottom:3px;width:2px;background:#7a5a30;transform:translateX(-1px);}
 .tick{position:absolute;top:9px;height:12px;width:1px;background:#4a3420;}
-.needle{position:absolute;top:0;bottom:0;width:3px;left:50%;background:var(--phos);border-radius:2px;
-        box-shadow:0 0 12px var(--phos);transform:translateX(-1.5px);transition:left .06s linear,background .1s,box-shadow .1s;}
+
+/* Needle — stronger warm bloom */
+.needle{
+  position:absolute;top:0;bottom:0;width:3px;left:50%;
+  background:var(--phos);border-radius:2px;
+  box-shadow:0 0 5px var(--phos), 0 0 14px rgba(240,150,46,.7), 0 0 28px rgba(240,150,46,.35);
+  transform:translateX(-1.5px);transition:left .06s linear,background .1s,box-shadow .1s;
+}
 
 /* controls */
 .controls{padding:12px 16px;}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
 label{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:flex;flex-direction:column;gap:5px;}
-select,input[type=number]{background:#F6EFDF;color:var(--walnut-deep);border:1px solid var(--hair);border-radius:7px;
-      padding:7px 9px;font:13px "JetBrains Mono",monospace;}
+
+/* ENGRAVED SELECT — recessed, inset shadow, custom arrow */
+select{
+  background:linear-gradient(180deg, #DDD0B0, #EDE2CC);
+  color:var(--walnut-deep);
+  border:1px solid #AE9468;
+  border-bottom-color:var(--hair);
+  border-radius:6px;
+  padding:7px 26px 7px 9px;
+  font:13px "JetBrains Mono",monospace;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.14), inset 0 0 0 1px rgba(0,0,0,.04), 0 1px 0 rgba(255,255,255,.45);
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235A4632'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  cursor:pointer;
+}
+select:disabled{opacity:.45;cursor:not-allowed;}
+
 button{font-family:"Saira Condensed";letter-spacing:.1em;text-transform:uppercase;font-weight:600;font-size:14px;
       background:linear-gradient(180deg,#CE7A36,#B45F25);color:#F6EAD6;border:0;border-radius:8px;padding:9px 16px;
       cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 14px rgba(150,80,30,.22);}
 button.ghost{background:#EBDFC6;color:var(--walnut);box-shadow:none;border:1px solid var(--hair);}
 button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+
+/* HARDWARE TOGGLE SWITCH */
 .toggle{flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:11px;color:var(--walnut);cursor:pointer;}
-.toggle input{accent-color:var(--burnt);}
+
+.hw-toggle .sw{
+  position:relative; display:inline-flex; align-items:center;
+  width:40px; height:22px; flex-shrink:0;
+}
+.hw-toggle .sw input{
+  position:absolute; width:1px; height:1px; opacity:0;
+  padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0);
+}
+.hw-toggle .sw-track{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, #1C1008, #281606);
+  border:1px solid #38200A;
+  border-bottom-color:#4A3010;
+  border-radius:11px;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.2);
+  transition:background .2s, border-color .2s, box-shadow .2s;
+  cursor:pointer;
+}
+.hw-toggle .sw input:checked + .sw-track{
+  background:linear-gradient(180deg, #6A3A0E, #8C5018);
+  border-color:#7A4A14;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.3), 0 0 8px rgba(190,110,40,.35), 0 0 2px rgba(190,110,40,.5);
+}
+.hw-toggle .sw-thumb{
+  position:absolute; top:3px; left:3px;
+  width:14px; height:14px; border-radius:50%;
+  background:linear-gradient(150deg, #EDD8AA, #B89860);
+  box-shadow:0 1px 3px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.15);
+  transition:transform .2s;
+  pointer-events:none;
+}
+.hw-toggle .sw input:checked + .sw-track .sw-thumb{
+  transform:translateX(18px);
+  background:linear-gradient(150deg, #FFE8B8, #D4A860);
+}
+
 .hint{color:var(--muted);font-size:10px;margin-top:9px;line-height:1.5;}
+
+/* ROTARY KNOBS */
+.knob-group{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+}
+.knob-group canvas{
+  display:block; cursor:ns-resize; border-radius:50%;
+  width:72px; height:72px;
+}
+.knob-group canvas:focus{
+  outline:none;
+  filter:drop-shadow(0 0 4px rgba(240,150,46,.55));
+}
+[data-disabled="true"] .knob-group canvas,
+[data-disabled="true"] canvas{
+  opacity:.4; cursor:not-allowed;
+}
+.knob-val{
+  font-size:11px; color:var(--phos); letter-spacing:.06em;
+  min-width:52px; text-align:center;
+  text-shadow:0 0 8px rgba(240,150,46,.4);
+}
 
 /* screen / plot */
 .viz{padding:12px;}
@@ -75,6 +200,9 @@ canvas{width:100%;height:200px;display:block;background:radial-gradient(130% 120
       background:repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 3px);}
 .screen::before{content:"";position:absolute;inset:0;pointer-events:none;
       background:radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(20,10,0,.5));}
+
+/* Override canvas rule for knob canvases (they are not full-width screen canvases) */
+.knob-group canvas{width:72px;height:72px;}
 
 /* score */
 .score{padding:4px 8px 6px;}

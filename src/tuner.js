@@ -14,8 +14,9 @@ export function updateLiveTuner() {
   const sh = document.getElementById("sharpSym");
 
   if (S.currentFreq <= 0) {
-    nEl.textContent = "\u2014";
+    nEl.textContent = "—";
     nEl.style.color = "";
+    nEl.style.textShadow = "";
     cEl.textContent = "(no signal)";
     fEl.style.left = "50%";
     fEl.style.background = "#5a4630";
@@ -31,11 +32,11 @@ export function updateLiveTuner() {
 
   nEl.textContent = freqToName(S.currentFreq);
   nEl.style.color = col;
-  nEl.style.textShadow = `0 0 20px ${col}55`;
-  cEl.textContent = `${S.currentFreq.toFixed(1)} Hz \u00b7 ${dev > 0 ? "+" : ""}${dev.toFixed(0)} \u00a2`;
+  nEl.style.textShadow = `0 0 14px ${col}, 0 0 32px ${col}88`;
+  cEl.textContent = `${S.currentFreq.toFixed(1)} Hz · ${dev > 0 ? "+" : ""}${dev.toFixed(0)} ¢`;
   fEl.style.left = `${50 + Math.max(-50, Math.min(50, dev))}%`;
   fEl.style.background = col;
-  fEl.style.boxShadow = `0 0 12px ${col}`;
-  fl.classList.toggle("lit-flat", dev < -IN_TUNE);
+  fEl.style.boxShadow = `0 0 5px ${col}, 0 0 16px ${col}BB, 0 0 30px ${col}55`;
+  fl.classList.toggle("lit-flat",  dev < -IN_TUNE);
   sh.classList.toggle("lit-sharp", dev > IN_TUNE);
 }
