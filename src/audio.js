@@ -159,9 +159,12 @@ export function micOffSound() {
 }
 
 // Short percussive metronome tick for count-in numbers.
-export function countTick() {
+// Must be async so we can await resume() — scheduling on a suspended context silently
+// drops the event because ac.currentTime is frozen until the context actually runs.
+export async function countTick() {
   const ac = S.audioCtx;
-  const t = ac.currentTime;
+  await ac.resume();
+  const t = ac.currentTime + 0.01;
   const osc = ac.createOscillator();
   const g = ac.createGain();
   osc.type = "sine";
@@ -175,9 +178,10 @@ export function countTick() {
 }
 
 // Distinct "go" beep for "SING" — higher pitch, longer, clearly different from tick.
-export function countGo() {
+export async function countGo() {
   const ac = S.audioCtx;
-  const t = ac.currentTime;
+  await ac.resume();
+  const t = ac.currentTime + 0.01;
   const osc = ac.createOscillator();
   const g = ac.createGain();
   osc.type = "sine";

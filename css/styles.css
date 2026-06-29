@@ -121,7 +121,7 @@ select{
 select:disabled{opacity:.45;cursor:not-allowed;}
 
 button{font-family:"Saira Condensed";letter-spacing:.1em;text-transform:uppercase;font-weight:600;font-size:14px;
-      background:linear-gradient(180deg,#CE7A36,#B45F25);color:#F6EAD6;border:0;border-radius:8px;padding:9px 16px;
+      background:linear-gradient(180deg,#CE7A36,#B45F25);color:#F6EAD6;border:1px solid transparent;border-radius:8px;padding:9px 16px;
       cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 14px rgba(150,80,30,.22);}
 button.ghost{background:#EBDFC6;color:var(--walnut);box-shadow:none;border:1px solid var(--hair);}
 button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
@@ -164,6 +164,14 @@ button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
   transform:translateX(18px);
   background:linear-gradient(150deg, #FFE8B8, #D4A860);
 }
+
+/* Mic button and state text: fixed footprint so toggling never reflows layout.
+   min-width covers the larger text state ("TURN MIC OFF" / "mic off"). */
+#micBtn { white-space:nowrap; min-width:150px; }
+#micStateText { display:inline-block; min-width:50px; }
+
+/* Start/Stop pair: both buttons in the same column container stretch to equal width. */
+#startBtn, #stopBtn { width:100%; }
 
 .hint{color:var(--muted);font-size:10px;margin-top:9px;line-height:1.5;}
 

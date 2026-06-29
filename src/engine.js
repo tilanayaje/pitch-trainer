@@ -13,6 +13,10 @@ import { saveAttempt, renderHistory } from "./history.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Comfortable beat duration at default tempo — intentionally longer than the old
+// 450 ms hardcode. Tempo scaling multiplies on top of this.
+const COUNT_IN_STEP_MS = 750;
+
 // Called from the render loop while S.recording is true.
 export function sampleTrace() {
   S.trace.push({ t: performance.now() - S.recStart, f: S.currentFreq });
@@ -41,8 +45,8 @@ export async function runDrill() {
   if (!S.abort) {
     for (const w of ["5", "4", "3", "2", "1", "SING"]) {
       status(w);
-      if (w === "SING") countGo(); else countTick();
-      await sleep(450);
+      if (w === "SING") await countGo(); else await countTick();
+      await sleep(COUNT_IN_STEP_MS * S.tempo);
       if (S.abort) break;
     }
   }
