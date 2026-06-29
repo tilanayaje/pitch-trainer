@@ -1,0 +1,16 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="screenF" cx="50%" cy="2%" r="118%">
+<stop offset="0%" stop-color="#46301a"/>
+<stop offset="72%" stop-color="#1a120a"/>
+</radialGradient>
+</defs>
+<rect x="6" y="6" width="228" height="228" rx="42" fill="url(#screenF)" stroke="#0c0805" stroke-width="3"/>
+<polygon points="14,120 40,114 200,114 222,120 200,126 40,126" fill="#7a5526"/>
+<polygon points="60,88 65,94 65,146 60,152 55,146 55,94" fill="#7a5526"/>
+<polygon points="180,88 185,94 185,146 180,152 175,146 175,94" fill="#7a5526"/>
+<polygon points="108,96 116,104 116,136 108,144 100,136 100,104" fill="#FFB22E" opacity="0.28"/>
+<polygon points="108,100 113,106 113,134 108,140 103,134 103,106" fill="#FFB22E"/>
+<polygon points="142,22 158,52 158,188 142,218 126,188 126,52" fill="#FFB22E" opacity="0.30"/>
+<polygon points="142,28 151,54 151,186 142,212 133,186 133,54" fill="#FFB22E"/>
+</svg>
