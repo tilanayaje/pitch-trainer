@@ -5,8 +5,12 @@
   --led:#C9852E; --burnt:#BE6A2E;
 }
 *{box-sizing:border-box}
+html{
+  margin:0; padding:0; min-height:100%;
+  background:#2a1a0a;
+}
 body{
-  margin:0; color:#E7DAC0;
+  margin:0; padding:0; color:#E7DAC0;
   font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   background:radial-gradient(130% 90% at 50% -12%, #4A361F 0%, #3A2A19 55%, #2C2013 100%);
   background-attachment:fixed; min-height:100vh; -webkit-font-smoothing:antialiased;
