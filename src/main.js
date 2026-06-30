@@ -30,6 +30,7 @@ function loop() {
 const drillSel = document.getElementById("drillSel");
 const CATEGORY_ORDER = ["sustain", "steps", "leaps", "scales", "arpeggios"];
 const CATEGORY_LABELS = { sustain: "Sustain", steps: "Steps", leaps: "Leaps", scales: "Scales", arpeggios: "Arpeggios" };
+const truncOpt = (s, max = 35) => s.length > max ? s.slice(0, max - 1) + "…" : s;
 for (const cat of CATEGORY_ORDER) {
   const group = document.createElement("optgroup");
   group.label = CATEGORY_LABELS[cat];
@@ -37,7 +38,7 @@ for (const cat of CATEGORY_ORDER) {
     if (v.category === cat) {
       const o = document.createElement("option");
       o.value = k;
-      o.textContent = v.name;
+      o.textContent = truncOpt(v.name);
       group.appendChild(o);
     }
   }
@@ -55,7 +56,7 @@ function syncCustomOptgroup() {
   customDrills.forEach((d) => {
     const o = document.createElement("option");
     o.value = "__custom_" + d.id;
-    o.textContent = d.name;
+    o.textContent = truncOpt(d.name);
     customGroup.appendChild(o);
   });
   customGroup.hidden = customDrills.length === 0;
@@ -210,13 +211,28 @@ makeKnob(document.getElementById("tempoKnob"), {
   formatVal: (v) => `${v.toFixed(2).replace(/0$/, "")}×`,
 });
 
-// --- toggle switches (checkboxes inside .sw; wiring is identical) ---
-document.getElementById("concurrentChk").onchange  = (e) => { S.concurrentEnabled  = e.target.checked; };
-document.getElementById("playheadChk").onchange    = (e) => { S.playheadEnabled    = e.target.checked; };
-document.getElementById("guideTonesChk").onchange  = (e) => {
-  S.guideTonesEnabled = e.target.checked;
-  console.log("[guide-diag] 1. toggle onchange fired — guideTonesEnabled=", S.guideTonesEnabled);
-};
+// --- toggle persistence ---
+const TOGGLE_KEY = "pt_toggles";
+function loadToggles() {
+  try { return JSON.parse(localStorage.getItem(TOGGLE_KEY) || "{}"); } catch { return {}; }
+}
+function saveToggles(patch) {
+  try { localStorage.setItem(TOGGLE_KEY, JSON.stringify({ ...loadToggles(), ...patch })); } catch {}
+}
+
+// --- toggle switches: restore saved state then wire onchange ---
+const savedToggles = loadToggles();
+const concChk = document.getElementById("concurrentChk");
+const playChk = document.getElementById("playheadChk");
+const guidChk = document.getElementById("guideTonesChk");
+
+if (savedToggles.concurrent != null) { concChk.checked = savedToggles.concurrent; S.concurrentEnabled  = savedToggles.concurrent; }
+if (savedToggles.playhead   != null) { playChk.checked = savedToggles.playhead;   S.playheadEnabled    = savedToggles.playhead; }
+if (savedToggles.guideTones != null) { guidChk.checked = savedToggles.guideTones; S.guideTonesEnabled  = savedToggles.guideTones; }
+
+concChk.onchange = (e) => { S.concurrentEnabled  = e.target.checked; saveToggles({ concurrent: e.target.checked }); };
+playChk.onchange = (e) => { S.playheadEnabled    = e.target.checked; saveToggles({ playhead:   e.target.checked }); };
+guidChk.onchange = (e) => { S.guideTonesEnabled  = e.target.checked; saveToggles({ guideTones: e.target.checked }); };
 
 // CRT power-off: white overlay retracts top-to-bottom into a thin line at the
 // bottom edge, then snaps out. .face is always position:relative in CSS so no
@@ -272,7 +288,7 @@ document.getElementById("micBtn").onclick = async (e) => {
 document.getElementById("startBtn").onclick = () => { if (S.phase === "IDLE") runDrill(); };
 document.getElementById("stopBtn").onclick = () => { S.abort = true; S.recording = false; };
 
-document.getElementById("clearHistBtn").onclick = clearHistory;
+document.getElementById("clearHistBtn").onclick = (e) => { e.stopPropagation(); clearHistory(); };
 
 // --- first paint ---
 drawPlot({ preplay: true });

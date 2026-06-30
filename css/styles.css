@@ -225,8 +225,13 @@ td{color:var(--walnut);}
 .flat{color:var(--amber);} .sharp{color:var(--red);} .good{color:var(--green);}
 /* history */
 .history{padding:8px 16px 10px;}
-.history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.history-head button{padding:4px 10px;font-size:11px;}
+.history-summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;
+  padding:2px 0;cursor:pointer;user-select:none;
+}
+.history-summary::-webkit-details-marker{display:none;}
+#historyDetails[open]>.history-summary{margin-bottom:6px;}
+#clearHistBtn{padding:4px 10px;font-size:11px;}
 .hist-row{display:flex;gap:12px;align-items:baseline;padding:5px 0;border-bottom:1px solid #D2C09A;font-size:12px;color:var(--walnut);}
 .hist-row:last-child{border-bottom:none;}
 .hist-time{color:var(--muted);font-size:10px;min-width:76px;flex-shrink:0;}
@@ -246,8 +251,21 @@ td{color:var(--walnut);}
 @media (prefers-reduced-motion:reduce){ .needle{transition:none;} }
 @media (max-width:560px){ .note{font-size:46px;} .row{gap:12px;} }
 
-/* DRILL DESIGNER */
-.drill-designer{padding:12px 16px 14px;}
+/* CUSTOM DRILL BUILDER */
+#drillSel{width:200px;}
+#tonicSel{width:88px;}
+.builder-details{margin-top:10px;border-top:1px solid var(--hair);padding-top:8px;}
+.builder-summary,.saved-summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;
+  padding:4px 0;cursor:pointer;user-select:none;
+}
+.builder-summary::-webkit-details-marker,.saved-summary::-webkit-details-marker{display:none;}
+.builder-summary::after,.saved-summary::after{
+  content:"▸";font-size:11px;color:var(--muted);flex-shrink:0;margin-left:8px;
+}
+#builderDetails[open]>.builder-summary::after{content:"▾";}
+#savedDetails[open]>.saved-summary::after{content:"▾";}
+.builder-body{padding-top:10px;}
 .solfege-pad{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .solfege-btn{
   font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;
@@ -261,11 +279,12 @@ td{color:var(--walnut);}
 .solfege-btn:active{background:linear-gradient(180deg,#D5C8A8,#C8BA92);box-shadow:inset 0 2px 4px rgba(0,0,0,.15);}
 .seq-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .seq-display{
-  flex:1;min-height:34px;padding:7px 10px;
+  flex:1;height:34px;padding:7px 10px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
   background:radial-gradient(120% 150% at 50% 0%,#3a2a1a,var(--screen) 72%);
   border:1px solid #160f09;border-radius:6px;
   color:var(--phos);font-size:12px;letter-spacing:.04em;line-height:1.5;
-  box-shadow:inset 0 2px 8px rgba(0,0,0,.4);word-break:break-all;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.4);
 }
 .seq-btn{padding:5px 10px;font-size:12px;}
 .builder-fields{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:6px;}
@@ -281,13 +300,14 @@ td{color:var(--walnut);}
   box-shadow:inset 0 2px 4px rgba(0,0,0,.14),inset 0 0 0 1px rgba(0,0,0,.04),0 1px 0 rgba(255,255,255,.45);
   outline:none;
 }
-.builder-fields input[type="text"]{min-width:180px;}
+.builder-fields input[type="text"]{width:200px;}
 .builder-fields input[type="number"]{width:88px;}
 .dur-row{display:flex;align-items:center;gap:6px;}
 .dur-unit{color:var(--muted);font-size:11px;}
 .builder-msg{font-size:11px;min-height:18px;margin-bottom:4px;letter-spacing:.03em;}
 .builder-msg.ok{color:var(--green);}
 .builder-msg.err{color:var(--red);}
+.saved-details{margin-top:8px;}
 .custom-list-head{
   color:var(--muted);font-family:"Saira Condensed";letter-spacing:.18em;
   text-transform:uppercase;font-size:10px;margin:8px 0 4px;
@@ -297,6 +317,6 @@ td{color:var(--walnut);}
   padding:5px 0;border-bottom:1px solid #D2C09A;font-size:12px;color:var(--walnut);
 }
 .custom-item:last-child{border-bottom:none;}
-.custom-item-name{flex:1;}
-.custom-item-del{padding:3px 8px;font-size:11px;}
+.custom-item-name{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0;}
+.custom-item-del{padding:3px 8px;font-size:11px;flex-shrink:0;}
 .custom-empty{color:var(--muted);font-size:11px;padding:6px 0;}
