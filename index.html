@@ -109,29 +109,6 @@
     <div class="hint">Target plays on the grid → count-in → sing it back → score shown after&nbsp;</div>
   </div>
 
-  <!-- VIZ -->
-  <div class="brushed viz">
-    <div class="status" id="status">idle</div>
-    <div class="screen"><canvas id="plot" width="940" height="200"></canvas></div>
-  </div>
-
-  <!-- SCORE -->
-  <div class="brushed score" id="scorePanel" style="display:none">
-    <table id="scoreTable">
-      <thead><tr><th></th><th>note</th><th>target</th><th>landed</th><th>hold in band</th><th>hold mean dev</th><th>hold drift</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="brushed history" id="historyPanel">
-    <div class="history-head">
-      <span class="eyebrow">History</span>
-      <button id="clearHistBtn" class="ghost">Clear history</button>
-    </div>
-    <div id="historyList"></div>
-  </div>
-
   <!-- DRILL DESIGNER -->
   <div class="brushed drill-designer">
     <div class="history-head">
@@ -158,6 +135,30 @@
     <div id="builderMsg" class="builder-msg"></div>
     <div id="customDrillList"></div>
   </div>
+
+  <!-- VIZ -->
+  <div class="brushed viz">
+    <div class="status" id="status">idle</div>
+    <div class="screen"><canvas id="plot" width="940" height="200"></canvas></div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="brushed score" id="scorePanel" style="display:none">
+    <table id="scoreTable">
+      <thead><tr><th></th><th>note</th><th>target</th><th>landed</th><th>hold in band</th><th>hold mean dev</th><th>hold drift</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="brushed history" id="historyPanel">
+    <div class="history-head">
+      <span class="eyebrow">History</span>
+      <button id="clearHistBtn" class="ghost">Clear history</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
 </main>
 
 <script type="module" src="src/main.js"></script>

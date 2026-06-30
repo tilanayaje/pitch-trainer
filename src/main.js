@@ -2,8 +2,8 @@
 
 import { S } from "./state.js";
 import { DRILLS } from "./drills.js";
-import { DEGREE, freqToName, midiToFreq } from "./theory.js";
-import { enableMic, disableMic, readPitch, micOnSound, micOffSound } from "./audio.js";
+import { DEGREE, freqForDegree, freqToName, midiToFreq } from "./theory.js";
+import { enableMic, disableMic, readPitch, micOnSound, micOffSound, playTone } from "./audio.js";
 import { drawPlot } from "./render.js";
 import { updateLiveTuner } from "./tuner.js";
 import { runDrill, sampleTrace } from "./engine.js";
@@ -28,16 +28,25 @@ function loop() {
 
 // --- drill dropdown ---
 const drillSel = document.getElementById("drillSel");
-for (const [k, v] of Object.entries(DRILLS)) {
-  const o = document.createElement("option");
-  o.value = k;
-  o.textContent = v.name;
-  drillSel.appendChild(o);
+const CATEGORY_ORDER = ["sustain", "steps", "leaps", "scales", "arpeggios"];
+const CATEGORY_LABELS = { sustain: "Sustain", steps: "Steps", leaps: "Leaps", scales: "Scales", arpeggios: "Arpeggios" };
+for (const cat of CATEGORY_ORDER) {
+  const group = document.createElement("optgroup");
+  group.label = CATEGORY_LABELS[cat];
+  for (const [k, v] of Object.entries(DRILLS)) {
+    if (v.category === cat) {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = v.name;
+      group.appendChild(o);
+    }
+  }
+  drillSel.appendChild(group);
 }
 
 let customDrills = loadCustomDrills();
 const customGroup = document.createElement("optgroup");
-customGroup.label = "— Custom —";
+customGroup.label = "Custom";
 customGroup.hidden = customDrills.length === 0;
 drillSel.appendChild(customGroup);
 
@@ -68,10 +77,14 @@ drillSel.onchange = (e) => {
 
 // --- custom drill builder ---
 const builderNotes = [];
+let nameAutoFill = true;
 
 function updateSeqDisplay() {
   const el = document.getElementById("seqDisplay");
   el.textContent = builderNotes.length ? builderNotes.join(" · ") : "—";
+  if (nameAutoFill) {
+    document.getElementById("drillName").value = builderNotes.join("-");
+  }
 }
 
 Object.keys(DEGREE).forEach((deg) => {
@@ -79,12 +92,21 @@ Object.keys(DEGREE).forEach((deg) => {
   btn.type = "button";
   btn.className = "solfege-btn";
   btn.textContent = deg;
-  btn.onclick = () => { builderNotes.push(deg); updateSeqDisplay(); };
+  btn.onclick = () => {
+    builderNotes.push(deg);
+    updateSeqDisplay();
+    playTone(freqForDegree(deg, S.tonicMidi), 400).catch(() => {});
+  };
   document.getElementById("solfegePad").appendChild(btn);
 });
 
 document.getElementById("seqUndo").onclick = () => { builderNotes.pop(); updateSeqDisplay(); };
-document.getElementById("seqClear").onclick = () => { builderNotes.length = 0; updateSeqDisplay(); };
+document.getElementById("seqClear").onclick = () => {
+  builderNotes.length = 0;
+  nameAutoFill = true;
+  updateSeqDisplay();
+};
+document.getElementById("drillName").addEventListener("input", () => { nameAutoFill = false; });
 
 function setBuilderMsg(text, cls) {
   const el = document.getElementById("builderMsg");
@@ -151,6 +173,7 @@ document.getElementById("saveDrillBtn").onclick = () => {
   S.currentDrill = drill;
   drawPlot({ preplay: true });
   builderNotes.length = 0;
+  nameAutoFill = true;
   updateSeqDisplay();
   document.getElementById("drillName").value = "";
   setBuilderMsg(`"${name}" saved!`, "ok");

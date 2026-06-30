@@ -43,9 +43,9 @@ export async function runDrill() {
 
   // --- count-in ---
   if (!S.abort) {
-    for (const w of ["5", "4", "3", "2", "1", "SING"]) {
+    for (const w of ["3", "2", "1", "GO"]) {
       status(w);
-      if (w === "SING") await countGo(); else await countTick();
+      if (w === "GO") await countGo(); else await countTick();
       await sleep(COUNT_IN_STEP_MS * S.tempo);
       if (S.abort) break;
     }
