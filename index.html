@@ -131,6 +131,33 @@
     </div>
     <div id="historyList"></div>
   </div>
+
+  <!-- DRILL DESIGNER -->
+  <div class="brushed drill-designer">
+    <div class="history-head">
+      <span class="eyebrow">Custom Drill Builder</span>
+    </div>
+    <div class="solfege-pad" id="solfegePad"></div>
+    <div class="seq-row">
+      <div class="seq-display" id="seqDisplay">—</div>
+      <button type="button" class="ghost seq-btn" id="seqUndo">&#9003;</button>
+      <button type="button" class="ghost seq-btn" id="seqClear">clear</button>
+    </div>
+    <div class="builder-fields">
+      <label>Drill name
+        <input type="text" id="drillName" placeholder="e.g. My arpeggio" maxlength="60">
+      </label>
+      <label>Note duration
+        <div class="dur-row">
+          <input type="number" id="drillDur" value="700" min="200" max="3000" step="50">
+          <span class="dur-unit">ms</span>
+        </div>
+      </label>
+      <button id="saveDrillBtn">Save drill</button>
+    </div>
+    <div id="builderMsg" class="builder-msg"></div>
+    <div id="customDrillList"></div>
+  </div>
 </main>
 
 <script type="module" src="src/main.js"></script>
