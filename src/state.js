@@ -19,8 +19,9 @@ export const S = {
   tonicMidi: 48,   // C3
   tolerance: 50,   // ± cents counted as "in band"
   tempo: 1,        // speed multiplier applied to all note durations (0.5–1.5)
-  concurrentEnabled: false, // user toggle: show the live line while singing
-  playheadEnabled: false,   // user toggle: show target note-map + timing playhead during response
+  concurrentEnabled: false,  // user toggle: show the live line while singing
+  playheadEnabled: false,    // user toggle: show target note-map + timing playhead during response
+  guideTonesEnabled: false,  // user toggle: play each target note aloud while singing (headphones)
 
   // --- run-time flags ---
   drawLiveDuringResponse: false,

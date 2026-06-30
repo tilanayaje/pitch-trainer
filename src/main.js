@@ -69,8 +69,12 @@ makeKnob(document.getElementById("tempoKnob"), {
 });
 
 // --- toggle switches (checkboxes inside .sw; wiring is identical) ---
-document.getElementById("concurrentChk").onchange = (e) => { S.concurrentEnabled = e.target.checked; };
-document.getElementById("playheadChk").onchange   = (e) => { S.playheadEnabled   = e.target.checked; };
+document.getElementById("concurrentChk").onchange  = (e) => { S.concurrentEnabled  = e.target.checked; };
+document.getElementById("playheadChk").onchange    = (e) => { S.playheadEnabled    = e.target.checked; };
+document.getElementById("guideTonesChk").onchange  = (e) => {
+  S.guideTonesEnabled = e.target.checked;
+  console.log("[guide-diag] 1. toggle onchange fired — guideTonesEnabled=", S.guideTonesEnabled);
+};
 
 // CRT power-off: white overlay retracts top-to-bottom into a thin line at the
 // bottom edge, then snaps out. .face is always position:relative in CSS so no

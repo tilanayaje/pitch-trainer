@@ -158,6 +158,27 @@ export function micOffSound() {
   setTimeout(() => ac.close(), 500);
 }
 
+// Reference tone played during the RESPONSE phase when guide-tones mode is on.
+// Intended for headphone use — speaker bleed would feed the mic and corrupt scoring.
+// Routes to ac.destination only; the analyser and worklet read only from micSource,
+// so there is no feedback path into pitch detection regardless.
+export function playGuideTone(freq, durMs) {
+  const ac = S.audioCtx;
+  if (!ac) return;
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.type = "triangle";
+  osc.frequency.value = freq;
+  const t = ac.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.15, t + 0.02);
+  g.gain.setValueAtTime(0.15, t + durMs / 1000 - 0.05);
+  g.gain.linearRampToValueAtTime(0, t + durMs / 1000);
+  osc.connect(g).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + durMs / 1000);
+}
+
 // Short percussive metronome tick for count-in numbers.
 // Must be async so we can await resume() — scheduling on a suspended context silently
 // drops the event because ac.currentTime is frozen until the context actually runs.

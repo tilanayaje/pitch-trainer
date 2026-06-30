@@ -25,7 +25,10 @@ function persist(records) {
 export function saveAttempt(scores, drill, tonicMidi) {
   const withMean = scores.filter((s) => s.mean != null);
   const usable = withMean.filter((s) => Math.abs(s.mean) <= ARTIFACT_THRESHOLD);
-  const avgMean = usable.length
+  const avgMad = usable.length
+    ? Math.round(usable.reduce((a, s) => a + Math.abs(s.mean), 0) / usable.length)
+    : null;
+  const avgLean = usable.length
     ? Math.round(usable.reduce((a, s) => a + s.mean, 0) / usable.length)
     : null;
   const record = {
@@ -36,7 +39,8 @@ export function saveAttempt(scores, drill, tonicMidi) {
     inTune: usable.filter((s) => Math.abs(s.mean) <= TUNE).length,
     flat: usable.filter((s) => s.mean < -TUNE).length,
     sharp: usable.filter((s) => s.mean > TUNE).length,
-    avgMean,
+    avgMad,
+    avgLean,
   };
   const records = load();
   records.push(record);
@@ -84,10 +88,13 @@ export function renderHistory() {
       ]
         .filter(Boolean)
         .join(" ");
-      const avg =
-        r.avgMean != null
-          ? ` · avg ${r.avgMean > 0 ? "+" : ""}${r.avgMean}c`
-          : "";
+      let avg = "";
+      if (r.avgMad != null) {
+        const lean = r.avgLean < 0 ? ", flat" : r.avgLean > 0 ? ", sharp" : "";
+        avg = ` · avg dev ${r.avgMad}c${lean}`;
+      } else if (r.avgMean != null) {
+        avg = ` · avg ${r.avgMean > 0 ? "+" : ""}${r.avgMean}c`;
+      }
       return `<div class="hist-row">
         <span class="hist-time">${formatTime(r.ts)}</span>
         <span class="hist-drill">${r.drill} · ${r.tonic}</span>

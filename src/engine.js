@@ -5,7 +5,7 @@
 import { S } from "./state.js";
 import { stepMs, NOTE_GAP } from "./drills.js";
 import { freqForDegree } from "./theory.js";
-import { playTone, countTick, countGo } from "./audio.js";
+import { playTone, countTick, countGo, playGuideTone } from "./audio.js";
 import { scoreAttempt } from "./scoring.js";
 import { drawPlot } from "./render.js";
 import { status, setControls, renderScores } from "./ui.js";
@@ -60,6 +60,18 @@ export async function runDrill() {
     S.recElapsed = 0;
     S.recStart = performance.now();
     S.recording = true;
+    if (S.guideTonesEnabled) {
+      // Fire-and-forget: plays each target note in sync with the response window.
+      // Non-blocking so the main await sleep(recTotal) continues uninterrupted.
+      (async () => {
+        for (let i = 0; i < drill.notes.length; i++) {
+          if (!S.recording) break;
+          if (i > 0) await sleep(stepMs(drill) * S.tempo);
+          if (!S.recording) break;
+          playGuideTone(freqForDegree(drill.notes[i], S.tonicMidi), drill.noteDur * S.tempo);
+        }
+      })();
+    }
     status("singing…" + (S.drawLiveDuringResponse ? " (live line on)" : ""));
     drawPlot();
     await sleep(recTotal + 250);
