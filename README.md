@@ -1,6 +1,6 @@
 <h1 align="center">PitchTrainer</h1>
 <p align="center">
-  <img width="462" height="938" src="https://github.com/user-attachments/assets/de0d59e9-777b-4d0d-91ff-30419085008e" />
+  <img width="471" height="889" alt="image" src="https://github.com/user-attachments/assets/b9710cf6-31ac-45a7-8c80-8943ec7ef4b4" />
   <p align="center" >Try it out at https://tilanayaje.github.io/pitch-trainer/ ! </p>
 </p>
 
