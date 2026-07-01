@@ -3,7 +3,7 @@
 // never the approach scoop — see the split at landIdx below.
 
 import { cents, freqForDegree } from "./theory.js";
-import { TAIL_TRIM, stepMs } from "./drills.js";
+import { TAIL_TRIM, ONSET_TRIM, stepMs } from "./drills.js";
 
 export function scoreAttempt(trace, drill, tonicMidi, tolerance, tempo = 1) {
   const notes = drill.notes;
@@ -22,9 +22,15 @@ export function scoreAttempt(trace, drill, tonicMidi, tolerance, tempo = 1) {
     }
     const devs = seg.map((s) => cents(s.f, tf));
 
-    // first moment inside the band = the boundary between hunt and hold
+    // first moment inside the band = the boundary between hunt and hold.
+    // Skip the leading ONSET_TRIM ms (except on the first note) so the scoop FROM
+    // the previous note — which can transiently swing through the target band —
+    // can't be mistaken for an early land.
+    const isFirst = i === 0;
+    const susStart = isFirst ? w0 : w0 + ONSET_TRIM;
     let landIdx = -1;
     for (let k = 0; k < devs.length; k++) {
+      if (seg[k].t < susStart) continue;
       if (Math.abs(devs[k]) <= tolerance) { landIdx = k; break; }
     }
     if (landIdx < 0) {

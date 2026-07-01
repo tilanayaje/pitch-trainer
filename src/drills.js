@@ -48,8 +48,11 @@ export const DRILLS = {
 
 
 // scoring trims TAIL_TRIM ms off each note's tail so the scoop toward the NEXT note
-// can't pollute this note's hold statistics.
+// can't pollute this note's hold statistics. ONSET_TRIM does the mirror job at the
+// start: it excludes the scoop FROM the PREVIOUS note (audio buffer/acoustic latency
+// blends old+new pitch right after a transition, which can trigger a false early land).
 export const NOTE_GAP = 0;
-export const TAIL_TRIM = 150; // ms excluded from hold stats at the end of each note (except the last)
+export const TAIL_TRIM = 150;  // ms excluded from hold stats at the end of each note (except the last)
+export const ONSET_TRIM = 50; // ms excluded from hold stats at the start of each note (except the first)
 
 export const stepMs = (drill) => drill.noteDur + NOTE_GAP;
